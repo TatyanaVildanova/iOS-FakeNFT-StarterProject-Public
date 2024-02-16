@@ -25,6 +25,9 @@ final class WebViewerController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupActivityIndicator()
+        
+        guard let myURL = URL(string: "https://practicum.yandex.ru/ios-developer") else { return }
+        webView.load(URLRequest(url: myURL))
     }
     
     // MARK: Selectors
