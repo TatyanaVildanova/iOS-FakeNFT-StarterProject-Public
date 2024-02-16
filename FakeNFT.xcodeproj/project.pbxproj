@@ -405,8 +405,8 @@
 		3F6806C729CBBC5B00B4F915 /* Scenes  */ = {
 			isa = PBXGroup;
 			children = (
-				05B442722B7BD896009055C7 /* Profile */,
 				E1A1B9D82AA01C9700C3AFBC /* TabBarController */,
+				05B442722B7BD896009055C7 /* Profile */,
 				0CF2C2D92A783C1600FDC837 /* Common */,
 				0CFCB7472A7808870009A829 /* Catalog */,
 				0C79EE642A76DDCF00EE90EA /* NftDetails */,

@@ -28,4 +28,3 @@ struct Profile: Decodable {
         self.id = String()
     }
 }
-

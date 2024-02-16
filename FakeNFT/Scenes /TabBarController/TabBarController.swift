@@ -57,4 +57,3 @@ final class TabBarController: UITabBarController {
         tabBar.unselectedItemTintColor = UIColor(named: "YP Black")
     }
 }
-
