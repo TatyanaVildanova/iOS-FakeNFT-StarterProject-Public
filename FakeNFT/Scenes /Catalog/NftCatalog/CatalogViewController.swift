@@ -10,11 +10,16 @@ import UIKit
 //MARK: - CatalogViewProtocol
 protocol CatalogViewProtocol: AnyObject {
     func reloadData()
+    func showLoading()
+    func hideLoading()
 }
 
 //MARK: - CatalogViewController
 final class CatalogViewController: UIViewController {
     
+    //MARK: - Properties
+    var activityIndicator = UIActivityIndicatorView()
+
     //MARK: - Private properties
     private let servicesAssembly: ServicesAssembly
     private var presenter: CatalogPresenterProtocol?
@@ -84,7 +89,9 @@ final class CatalogViewController: UIViewController {
         
     private func addViews() {
         view.addSubview(tableView)
+        view.addSubview(activityIndicator)
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func layoutViews() {
@@ -92,7 +99,11 @@ final class CatalogViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            activityIndicator.widthAnchor.constraint(equalToConstant: 25),
+            activityIndicator.heightAnchor.constraint(equalToConstant: 25)
         ])
     }
 }
@@ -137,6 +148,16 @@ final class CatalogViewController: UIViewController {
 extension CatalogViewController: CatalogViewProtocol {
     func reloadData() {
         tableView.reloadData()
+    }
+}
+
+extension CatalogViewController: LoadingView {
+    func showLoading() {
+        activityIndicator.startAnimating()
+    }
+
+    func hideLoading() {
+        activityIndicator.stopAnimating()
     }
 }
 

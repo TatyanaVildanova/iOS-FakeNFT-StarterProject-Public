@@ -41,14 +41,17 @@ final class CatalogPresenter: CatalogPresenterProtocol {
     
     //MARK: - Public methods
     func getNftCollections() {
+        view?.showLoading()
         service.loadNft( completion: { [weak self] result in
             switch result {
             case .success(let collections):
                 self?.NftCollections = collections
                 self?.checkSort()
+                self?.view?.hideLoading()
                 self?.view?.reloadData()
             case .failure(let error):
                 print(error)
+                self?.view?.hideLoading()
             }
         }
         )
