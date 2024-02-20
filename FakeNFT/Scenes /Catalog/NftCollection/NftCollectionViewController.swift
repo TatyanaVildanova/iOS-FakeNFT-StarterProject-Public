@@ -23,7 +23,7 @@ final class NftCollectionViewController: UIViewController {
         addViews()
         layoutViews()
     }
-    
+        
     private func addViews() {
     }
     
