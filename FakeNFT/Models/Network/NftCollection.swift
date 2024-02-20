@@ -19,13 +19,9 @@ struct NftCollection: Codable {
     var createAtDate: Date {
         DateFormatter.defaultDateFormatter.date(from: createdAt)!
     }
-    //    var coverURL: URL { URL(string: cover)! }
     
     var coverURL: URL {
         URL(string: cover.encodeURL)!
     }
     
 }
-
-
-

@@ -12,6 +12,7 @@ protocol CatalogViewProtocol: AnyObject {
     func reloadData()
     func showLoading()
     func hideLoading()
+    func showErrorAlert()
 }
 
 //MARK: - CatalogViewController
@@ -19,7 +20,7 @@ final class CatalogViewController: UIViewController {
     
     //MARK: - Properties
     var activityIndicator = UIActivityIndicatorView()
-
+    
     //MARK: - Private properties
     private let servicesAssembly: ServicesAssembly
     private var presenter: CatalogPresenterProtocol?
@@ -54,7 +55,7 @@ final class CatalogViewController: UIViewController {
     convenience init(servicesAssembly: ServicesAssembly) {
         let presenter = CatalogPresenter(service: servicesAssembly.nftCatalogService)
         self.init(servicesAssembly: servicesAssembly, presenter: presenter)
-        }
+    }
     
     init(servicesAssembly: ServicesAssembly, presenter: CatalogPresenterProtocol) {
         self.servicesAssembly = servicesAssembly
@@ -62,7 +63,7 @@ final class CatalogViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         self.presenter?.view = self
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -86,7 +87,7 @@ final class CatalogViewController: UIViewController {
         let rightButton = UIBarButtonItem(customView: sortButton)
         navigationItem.rightBarButtonItem = rightButton
     }
-        
+    
     private func addViews() {
         view.addSubview(tableView)
         view.addSubview(activityIndicator)
@@ -151,13 +152,42 @@ extension CatalogViewController: CatalogViewProtocol {
     }
 }
 
+//MARK: - LoadingView
 extension CatalogViewController: LoadingView {
     func showLoading() {
         activityIndicator.startAnimating()
     }
-
+    
     func hideLoading() {
         activityIndicator.stopAnimating()
+    }
+    
+    func showErrorAlert() {
+        let alert = UIAlertController(
+            title: NSLocalizedString("Error.title", comment: ""),
+            message: NSLocalizedString("Error.network", comment: ""),
+            preferredStyle: .alert
+        )
+        
+        let cancelAction = UIAlertAction(
+            title: NSLocalizedString("Error.cancel", comment: ""),
+            style: .cancel
+        )
+        
+        let repeatAction = UIAlertAction(
+            title: NSLocalizedString("Error.repeat", comment: ""),
+            style: .default
+        ){ [weak self] action in
+            self?.presenter?.getNftCollections()
+        }
+        
+        [cancelAction,
+         repeatAction].forEach {
+            alert.addAction($0)
+        }
+        
+        alert.preferredAction = cancelAction
+        present(alert, animated: true)
     }
 }
 

@@ -52,6 +52,7 @@ final class CatalogPresenter: CatalogPresenterProtocol {
             case .failure(let error):
                 print(error)
                 self?.view?.hideLoading()
+                self?.view?.showErrorAlert()
             }
         }
         )

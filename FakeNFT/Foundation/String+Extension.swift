@@ -5,7 +5,7 @@
 //  Created by Эмилия on 20.02.2024.
 //
 
-import UIKit
+import Foundation
 
 extension String {
     var encodeURL: String {
