@@ -23,7 +23,6 @@ final class CatalogTableViewCell: UITableViewCell {
     //MARK: - UI Components
     private lazy var tableImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = UIColor(named: "YP Black")
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 12
         imageView.clipsToBounds = true
@@ -34,7 +33,6 @@ final class CatalogTableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .bold)
         label.textColor = UIColor(named: "YP Black")
-        label.text = "Test text"
         return label
     }()
     

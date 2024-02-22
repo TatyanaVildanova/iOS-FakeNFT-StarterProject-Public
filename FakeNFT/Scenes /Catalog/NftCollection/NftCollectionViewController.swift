@@ -7,8 +7,16 @@
 
 import UIKit
 
+//MARK: - NftCollectionViewProtocol
+protocol NftCollectionViewProtocol: AnyObject {
+}
+
 //MARK: - NftCollectionViewController
-final class NftCollectionViewController: UIViewController {
+final class NftCollectionViewController: UIViewController, NftCollectionViewProtocol {
+    
+    //MARK: - Private properties
+    private let servicesAssembly: ServicesAssembly
+    private var presenter: NftCollectionPresenterProtocol?
     
     //MARK: - UI Components
     private lazy var scrollView: UIScrollView = {
@@ -77,12 +85,31 @@ final class NftCollectionViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.isScrollEnabled = false
+        collectionView.delegate = self
+        collectionView.dataSource = self
         collectionView.register(
             NftCollectionViewCell.self,
-            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: NftCollectionViewCell.identifier)
+            forCellWithReuseIdentifier: NftCollectionViewCell.identifier)
         return collectionView
     }()
+    
+    // MARK: - Initializers
+    convenience init(servicesAssembly: ServicesAssembly, collection: NftCollection?){
+        let presenter = NftCollectionPresenter()
+        self.init(servicesAssembly: servicesAssembly, presenter: presenter)
+    }
+    
+    init(servicesAssembly: ServicesAssembly, presenter: NftCollectionPresenterProtocol) {
+        self.servicesAssembly = servicesAssembly
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+        self.presenter?.view = self
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     
     //MARK: - Lifecycle
     override func viewDidLoad() {
@@ -117,12 +144,15 @@ final class NftCollectionViewController: UIViewController {
     private func layoutViews() {
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            scrollView.widthAnchor.constraint(equalToConstant: view.frame.width),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: -100),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            contentView.heightAnchor.constraint(equalToConstant: 1000),
+            //TODO: обновление высоты contentView в зависимости от количества ячеек коллекции
+            contentView.heightAnchor.constraint(equalToConstant: 1100),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -160,5 +190,61 @@ final class NftCollectionViewController: UIViewController {
 @objc extension NftCollectionViewController {
     private func didTapAuthorButton() {
         //TODO: переход на экран автора
+    }
+}
+
+//MARK: - UICollectionViewDelegate
+extension NftCollectionViewController: UICollectionViewDelegate {
+    //TODO: логика лайка и добавления в корзину
+}
+
+//MARK: - UICollectionViewDataSource
+extension NftCollectionViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        9
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: NftCollectionViewCell.identifier,
+            for: indexPath
+        ) as? NftCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        
+        cell.prepareForReuse()
+        cell.configureCell()
+        return cell
+    }
+}
+
+//MARK: - UICollectionViewDelegateFlowLayout
+extension NftCollectionViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        CGSize(width: 108, height: 192)
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        minimumInteritemSpacingForSectionAt section: Int
+    ) -> CGFloat {
+        9
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        minimumLineSpacingForSectionAt section: Int
+    ) -> CGFloat {
+        8
     }
 }
