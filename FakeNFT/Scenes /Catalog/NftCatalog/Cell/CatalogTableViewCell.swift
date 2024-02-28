@@ -7,17 +7,17 @@
 
 import UIKit
 
-//MARK: - CatalogNFTCellModel
-struct CatalogNFTCellModel {
-    let nameNFT: String
-    let countNFT: Int
+//MARK: - CatalogNftCellModel
+struct CatalogNftCellModel {
+    let nameNft: String
+    let countNft: Int
     let url: URL
 }
 
 //MARK: - CatalogTableViewCell
 final class CatalogTableViewCell: UITableViewCell {
     
-    //MARK: - Public properties
+    //MARK: - Properties
     static let identifier = "CatalogTableViewCell"
     
     //MARK: - UI Components
@@ -46,14 +46,10 @@ final class CatalogTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //MARK: - Public methods
-    func configureCell(with model: CatalogNFTCellModel) {
-        setImage(imageURL: model.url)
-        tableNameLabel.text = "\(model.nameNFT) (\(model.countNFT))"
-    }
-    
-    func setImage(imageURL:URL) {
-        tableImageView.kf.setImage(with: imageURL)
+    //MARK: - Methods
+    func configureCell(with model: CatalogNftCellModel) {
+        tableImageView.kf.setImage(with: model.url)
+        tableNameLabel.text = "\(model.nameNft) (\(model.countNft))"
     }
     
     //MARK: - Private methods

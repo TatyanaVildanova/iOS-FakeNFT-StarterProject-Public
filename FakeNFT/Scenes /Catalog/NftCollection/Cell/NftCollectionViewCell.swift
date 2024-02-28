@@ -7,13 +7,37 @@
 
 import UIKit
 
+//MARK: - CatalogNFTCellModel
+struct NftCollectionCellModel {
+    let id: String
+    let nameNft: String
+    let price: Float
+    let isLiked: Bool
+    let isInTheCart: Bool
+    let rating: Int
+    let url: URL
+}
+
+protocol NftCollectionViewCellDelegate: AnyObject {
+    func updateLike(for: IndexPath, state: Bool)
+    func updateOrder(for: IndexPath)
+}
+
 //MARK: - NftCollectionViewCell
 final class NftCollectionViewCell: UICollectionViewCell {
     
-    //MARK: - Public properties
+    //MARK: - Properties
     static let identifier = "NftCollectionViewCell"
+    var indexPath: IndexPath?
+    var delegate: NftCollectionViewCellDelegate?
+    
+    //MARK: - Private properties
+    private var idNft: String?
+    private var likeState: Bool = false
     
     //MARK: - UI Components
+    private lazy var activityIndicator = UIActivityIndicatorView()
+    
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -85,11 +109,23 @@ final class NftCollectionViewCell: UICollectionViewCell {
     }
     
     //MARK: - Public methods
-    func configureCell() {
-        imageView.image = UIImage(named: "NFTcard")
-        nameLabel.text = "Archie"
-        priceLabel.text = "1 ETH"
-        ratingView.update(rating: 5)
+    func configureCell(with model: NftCollectionCellModel) {
+        self.idNft = model.id
+        imageView.kf.setImage(with: model.url)
+        nameLabel.text = model.nameNft.components(separatedBy: " ").first
+        priceLabel.text = String(model.price) + " ETH"
+        ratingView.update(rating: model.rating)
+        cartButton.setImage(setCart(isInTheCart: model.isInTheCart), for: .normal)
+        likeButton.setImage(setLike(isLiked: model.isLiked), for: .normal)
+    }
+    
+    func setLike(isLiked: Bool) -> UIImage? {
+        self.likeState = isLiked
+        return likeState ? UIImage(named: "activeLike") : UIImage(named: "noActiveLike")
+    }
+    
+    func setCart(isInTheCart: Bool) -> UIImage? {
+        isInTheCart ? UIImage(named: "Catalog.CardFull") : UIImage(named: "Catalog.CardEmpty")
     }
     
     //MARK: - Private methods
@@ -103,7 +139,8 @@ final class NftCollectionViewCell: UICollectionViewCell {
          likeButton,
          ratingView,
          nameAndPriceStackView,
-         cartButton].forEach {
+         cartButton,
+         activityIndicator].forEach {
             contentView.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -134,17 +171,32 @@ final class NftCollectionViewCell: UICollectionViewCell {
             cartButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             cartButton.heightAnchor.constraint(equalToConstant: 40),
             cartButton.widthAnchor.constraint(equalToConstant: 40),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            activityIndicator.widthAnchor.constraint(equalToConstant: 25),
+            activityIndicator.heightAnchor.constraint(equalToConstant: 25)
         ])
+    }
+    
+    private func showLoading() {
+        activityIndicator.startAnimating()
+    }
+    
+    private func hideLoading() {
+        activityIndicator.stopAnimating()
     }
 }
 
 //MARK: - Actions
 @objc extension NftCollectionViewCell {
     private func didTapLikeButton() {
-        //TODO: добавление лайка
+        guard let indexPath else { return }
+        delegate?.updateLike(for: indexPath, state: likeState)
     }
     
     private func didTapCartButton() {
-        //TODO: добавление в корзину
+        guard let indexPath else { return }
+        delegate?.updateOrder(for: indexPath)
     }
 }

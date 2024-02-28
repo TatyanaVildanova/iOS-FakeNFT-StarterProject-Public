@@ -17,15 +17,14 @@ protocol CatalogViewProtocol: AnyObject {
 
 //MARK: - CatalogViewController
 final class CatalogViewController: UIViewController {
-    
-    //MARK: - Properties
-    var activityIndicator = UIActivityIndicatorView()
-    
+        
     //MARK: - Private properties
     private let servicesAssembly: ServicesAssembly
     private var presenter: CatalogPresenterProtocol?
     
     //MARK: - UI Components
+    private lazy var activityIndicator = UIActivityIndicatorView()
+
     private lazy var sortButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "Catalog.sortButton"), for: .normal)
@@ -53,7 +52,7 @@ final class CatalogViewController: UIViewController {
     
     // MARK: - Initializers
     convenience init(servicesAssembly: ServicesAssembly) {
-        let presenter = CatalogPresenter(service: servicesAssembly.nftCatalogService)
+        let presenter = CatalogPresenter(service: servicesAssembly.nftCollectionService)
         self.init(servicesAssembly: servicesAssembly, presenter: presenter)
     }
     
@@ -203,7 +202,7 @@ extension CatalogViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        guard let model = presenter?.getModel(for: indexPath) else { return cell }
+        guard let model = presenter?.getCellModel(for: indexPath) else { return cell }
         cell.configureCell(with: model)
         cell.selectionStyle = .none
         return cell

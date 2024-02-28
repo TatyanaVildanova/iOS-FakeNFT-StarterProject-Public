@@ -9,16 +9,24 @@ import UIKit
 
 //MARK: - NftCollectionViewProtocol
 protocol NftCollectionViewProtocol: AnyObject {
+    func reloadData()
+    func setupData(name: String, cover: URL, author: String, description: String)
+    func updateCell(indexPath: IndexPath)
+    func showLoading()
+    func hideLoading()
+    func showErrorAlert()
 }
 
 //MARK: - NftCollectionViewController
-final class NftCollectionViewController: UIViewController, NftCollectionViewProtocol {
+final class NftCollectionViewController: UIViewController {
     
     //MARK: - Private properties
     private let servicesAssembly: ServicesAssembly
     private var presenter: NftCollectionPresenterProtocol?
     
     //MARK: - UI Components
+    private lazy var activityIndicator = UIActivityIndicatorView()
+    
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isScrollEnabled = true
@@ -33,8 +41,6 @@ final class NftCollectionViewController: UIViewController, NftCollectionViewProt
     
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
-        //TODO: картинка из сети
-        imageView.image = UIImage(named: "Beige")
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 12
@@ -44,7 +50,6 @@ final class NftCollectionViewController: UIViewController, NftCollectionViewProt
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Beige"
         label.textColor = UIColor(named: "YP Black")
         label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         return label
@@ -60,7 +65,6 @@ final class NftCollectionViewController: UIViewController, NftCollectionViewProt
     
     private lazy var authorButton: UIButton = {
         let button = UIButton()
-        button.setTitle("John Doe", for: .normal)
         button.setTitleColor(UIColor(named: "YP Blue"), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .regular)
         button.addTarget(
@@ -72,7 +76,6 @@ final class NftCollectionViewController: UIViewController, NftCollectionViewProt
     
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Персиковый — как облака над закатным солнцем в океане. В этой коллекции совмещены трогательная нежность и живая игривость сказочных зефирных зверей."
         label.textAlignment = .left
         label.sizeToFit()
         label.numberOfLines = 0
@@ -95,7 +98,7 @@ final class NftCollectionViewController: UIViewController, NftCollectionViewProt
     
     // MARK: - Initializers
     convenience init(servicesAssembly: ServicesAssembly, collection: NftCollection?){
-        let presenter = NftCollectionPresenter()
+        let presenter = NftCollectionPresenter(service: servicesAssembly, nftCollection: collection)
         self.init(servicesAssembly: servicesAssembly, presenter: presenter)
     }
     
@@ -110,10 +113,11 @@ final class NftCollectionViewController: UIViewController, NftCollectionViewProt
         fatalError("init(coder:) has not been implemented")
     }
     
-    
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter?.getNftCollection()
+        presenter?.loadData()
         configure()
     }
     
@@ -126,7 +130,9 @@ final class NftCollectionViewController: UIViewController, NftCollectionViewProt
     private func addViews() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
+        view.addSubview(activityIndicator)
         
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -151,7 +157,7 @@ final class NftCollectionViewController: UIViewController, NftCollectionViewProt
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: -100),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             //TODO: обновление высоты contentView в зависимости от количества ячеек коллекции
-            contentView.heightAnchor.constraint(equalToConstant: 1100),
+            contentView.heightAnchor.constraint(equalToConstant: 1000),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
@@ -181,7 +187,12 @@ final class NftCollectionViewController: UIViewController, NftCollectionViewProt
             collectionView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 24),
             collectionView.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            activityIndicator.widthAnchor.constraint(equalToConstant: 25),
+            activityIndicator.heightAnchor.constraint(equalToConstant: 25)
         ])
     }
 }
@@ -193,15 +204,80 @@ final class NftCollectionViewController: UIViewController, NftCollectionViewProt
     }
 }
 
-//MARK: - UICollectionViewDelegate
-extension NftCollectionViewController: UICollectionViewDelegate {
-    //TODO: логика лайка и добавления в корзину
+//MARK: - NftCollectionViewProtocol
+extension NftCollectionViewController: NftCollectionViewProtocol {
+    func setupData(
+        name: String,
+        cover: URL,
+        author: String,
+        description: String
+    ) {
+        imageView.kf.setImage(with: cover)
+        titleLabel.text = name
+        authorButton.setTitle(author, for: .normal)
+        descriptionLabel.text = description
+    }
+    
+    func updateCell(indexPath: IndexPath) {
+        collectionView.reloadItems(at: [indexPath])
+    }
+    
+    func reloadData() {
+        collectionView.reloadData()
+    }
+    
+    func showLoading() {
+        activityIndicator.startAnimating()
+    }
+    
+    func hideLoading() {
+        activityIndicator.stopAnimating()
+    }
+    
+    func showErrorAlert() {
+        let alert = UIAlertController(
+            title: NSLocalizedString("Error.title", comment: ""),
+            message: NSLocalizedString("Error.network", comment: ""),
+            preferredStyle: .alert
+        )
+        
+        let cancelAction = UIAlertAction(
+            title: NSLocalizedString("Error.cancel", comment: ""),
+            style: .cancel
+        )
+        
+        let repeatAction = UIAlertAction(
+            title: NSLocalizedString("Error.repeat", comment: ""),
+            style: .default
+        ){ [weak self] action in
+            self?.presenter?.getNftCollection()
+        }
+        
+        [cancelAction,
+         repeatAction].forEach {
+            alert.addAction($0)
+        }
+        
+        alert.preferredAction = cancelAction
+        present(alert, animated: true)
+    }
+}
+
+//MARK: - NftCollectionViewCellDelegate
+extension NftCollectionViewController: NftCollectionViewCellDelegate {
+    func updateOrder(for indexPath: IndexPath) {
+        //TODO: добавление в корзину
+    }
+    
+    func updateLike(for indexPath: IndexPath, state: Bool) {
+        //TODO: добавление в избранное
+    }
 }
 
 //MARK: - UICollectionViewDataSource
 extension NftCollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        9
+        presenter?.nfts.count ?? 0
     }
     
     func collectionView(
@@ -217,7 +293,11 @@ extension NftCollectionViewController: UICollectionViewDataSource {
         }
         
         cell.prepareForReuse()
-        cell.configureCell()
+        
+        guard let model = presenter?.getCellModel(for: indexPath) else { return cell }
+        cell.configureCell(with: model)
+        cell.indexPath = indexPath
+        cell.delegate = self
         return cell
     }
 }
