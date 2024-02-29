@@ -32,13 +32,12 @@ final class ProfileServiceImpl: ProfileService {
     // MARK: - Methods
     func loadProfile( completion: @escaping ProfileCompletion) {
         let request = ProfileRequest()
-        networkClient.send(request: request, type: Profile.self) { [weak self] result in
+        networkClient.send(request: request, type: Profile.self) { [weak storage] result in
             switch result {
             case .success(let profile):
                 profile.likes.forEach {
-                    self?.storage.saveLike($0)
+                    storage?.saveLike($0)
                 }
-                
                 completion(.success(profile))
             case .failure(let error):
                 completion(.failure(error))

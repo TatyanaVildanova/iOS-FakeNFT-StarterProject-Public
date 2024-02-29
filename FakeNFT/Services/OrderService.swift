@@ -32,12 +32,12 @@ final class OrderServiceImpl: OrderService {
     // MARK: - Methods
     func loadOrders(completion: @escaping OrderCompletion) {
         let request = OrderRequest()
-        networkClient.send(request: request, type: Order.self) { [weak self] result in
+        networkClient.send(request: request, type: Order.self) { [weak storage] result in
             switch result {
             case .success(let orders):
-                self?.storage.saveOrderId(orderId: orders.id)
+                storage?.saveOrderId(orderId: orders.id)
                 orders.nfts.forEach {
-                    self?.storage.saveOrders($0)
+                    storage?.saveOrders($0)
                 }
                 completion(.success(orders))
             case .failure(let error):
