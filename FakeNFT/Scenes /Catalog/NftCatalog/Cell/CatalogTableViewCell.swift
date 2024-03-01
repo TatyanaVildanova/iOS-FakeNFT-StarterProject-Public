@@ -7,13 +7,6 @@
 
 import UIKit
 
-//MARK: - CatalogNftCellModel
-struct CatalogNftCellModel {
-    let nameNft: String
-    let countNft: Int
-    let url: URL
-}
-
 //MARK: - CatalogTableViewCell
 final class CatalogTableViewCell: UITableViewCell {
     

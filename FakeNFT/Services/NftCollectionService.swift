@@ -26,7 +26,7 @@ final class NftCollectionServiceImpl: NftCollectionService {
     }
     
     // MARK: - Methods
-    func loadNft( completion: @escaping NftCollectionCompletion) {
+    func loadNft(completion: @escaping NftCollectionCompletion) {
         let request = CollectionsRequest()
         networkClient.send(request: request, type: [NftCollection].self) { result in
             switch result {

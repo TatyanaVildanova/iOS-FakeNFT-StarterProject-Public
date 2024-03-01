@@ -34,6 +34,7 @@ final class ServicesAssembly {
     var orderService: OrderService {
         OrderServiceImpl(
             networkClient: networkClient,
-            storage: nftStorage)
+            storage: nftStorage
+        )
     }
 }

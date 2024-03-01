@@ -7,17 +7,6 @@
 
 import UIKit
 
-//MARK: - CatalogNFTCellModel
-struct NftCollectionCellModel {
-    let id: String
-    let nameNft: String
-    let price: Float
-    let isLiked: Bool
-    let isInTheCart: Bool
-    let rating: Int
-    let url: URL
-}
-
 protocol NftCollectionViewCellDelegate: AnyObject {
     func updateLike(for: IndexPath, state: Bool)
     func updateOrder(for: IndexPath)

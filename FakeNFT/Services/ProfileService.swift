@@ -11,7 +11,7 @@ typealias ProfileCompletion = (Result<Profile, Error>) -> Void
 
 //MARK: - ProfileService
 protocol ProfileService {
-    func loadProfile( completion: @escaping ProfileCompletion)
+    func loadProfile(completion: @escaping ProfileCompletion)
     func likeState(for id:String) -> Bool
 }
 
@@ -30,7 +30,7 @@ final class ProfileServiceImpl: ProfileService {
     }
     
     // MARK: - Methods
-    func loadProfile( completion: @escaping ProfileCompletion) {
+    func loadProfile(completion: @escaping ProfileCompletion) {
         let request = ProfileRequest()
         networkClient.send(request: request, type: Profile.self) { [weak storage] result in
             switch result {

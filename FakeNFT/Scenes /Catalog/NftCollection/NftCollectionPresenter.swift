@@ -21,13 +21,13 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
     
     //MARK: - Properties
     weak var view: NftCollectionViewProtocol?
-    var nftCollection: NftCollection?
     var nfts: [Nft] = []
-    var profile: Profile?
     
     //MARK: - Private properties
     private let service: ServicesAssembly
-    
+    private var profile: Profile?
+    private var nftCollection: NftCollection?
+
     // MARK: - Initializers
     init(service: ServicesAssembly, nftCollection: NftCollection?) {
         self.service = service
@@ -55,17 +55,6 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
         }
     }
     
-    func getProfile() {
-        service.profileService.loadProfile(completion: {[weak self] result in
-            switch result {
-            case .success(let profile):
-                self?.profile = profile
-            case .failure(let error):
-                print(error)
-            }
-        })
-    }
-    
     func loadData() {
         guard let nftCollection else { return }
         view?.setupData(
@@ -89,5 +78,16 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
             isInTheCart: service.orderService.cartState(for: nft.id),
             rating: nft.rating,
             url: nft.images[0])
+    }
+    
+    private func getProfile() {
+        service.profileService.loadProfile(completion: {[weak self] result in
+            switch result {
+            case .success(let profile):
+                self?.profile = profile
+            case .failure(let error):
+                print(error)
+            }
+        })
     }
 }
