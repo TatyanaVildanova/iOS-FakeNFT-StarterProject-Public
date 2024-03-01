@@ -29,14 +29,14 @@
 #### Экран NFT коллекции
 
 ##### Верстка
-- NavBar (est: 10 min; fact: x min).
-- Превью NFT коллекции (est: 30 min; fact: x min).
-- Описание NFT коллекции (est: 30 min; fact: x min).
-- Коллекция (est: 60 min; fact: x min).
-- Ячейка коллекции (est: 120 min; fact: x min).
+- NavBar (est: 10 min; fact: 30 min).
+- Превью NFT коллекции (est: 30 min; fact: 10 min).
+- Описание NFT коллекции (est: 30 min; fact: 30 min).
+- Коллекция (est: 60 min; fact: 60 min).
+- Ячейка коллекции (est: 120 min; fact: 120 min).
 
 
-`Total:` est: 250 min; fact: x min.
+`Total:` est: 250 min; fact: 250 min.
 
 
 ## Module 3:
