@@ -7,23 +7,15 @@
 
 import UIKit
 
-//MARK: - CatalogNFTCellModel
-struct CatalogNFTCellModel {
-    let nameNFT: String
-    let countNFT: Int
-    let url: URL
-}
-
 //MARK: - CatalogTableViewCell
 final class CatalogTableViewCell: UITableViewCell {
     
-    //MARK: - Public properties
+    //MARK: - Properties
     static let identifier = "CatalogTableViewCell"
     
     //MARK: - UI Components
     private lazy var tableImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = UIColor(named: "YP Black")
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 12
         imageView.clipsToBounds = true
@@ -34,7 +26,6 @@ final class CatalogTableViewCell: UITableViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .bold)
         label.textColor = UIColor(named: "YP Black")
-        label.text = "Test text"
         return label
     }()
     
@@ -48,14 +39,10 @@ final class CatalogTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //MARK: - Public methods
-    func configureCell(with model: CatalogNFTCellModel) {
-        setImage(imageURL: model.url)
-        tableNameLabel.text = "\(model.nameNFT) (\(model.countNFT))"
-    }
-    
-    func setImage(imageURL:URL) {
-        tableImageView.kf.setImage(with: imageURL)
+    //MARK: - Methods
+    func configureCell(with model: CatalogNftCellModel) {
+        tableImageView.kf.setImage(with: model.url)
+        tableNameLabel.text = "\(model.nameNft) (\(model.countNft))"
     }
     
     //MARK: - Private methods

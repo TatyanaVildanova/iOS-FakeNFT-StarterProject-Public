@@ -1,5 +1,5 @@
 //
-//  NftCatalogService.swift
+//  NftCollectionService.swift
 //  FakeNFT
 //
 //  Created by Эмилия on 16.02.2024.
@@ -7,27 +7,26 @@
 
 import Foundation
 
-typealias NftCollectionsCompletion = (Result< [NftCollection], Error>) -> Void
+typealias NftCollectionCompletion = (Result<[NftCollection], Error>) -> Void
 
-//MARK: - NftCatalogServiceProtocol
-protocol NftCatalogServiceProtocol {
-    func loadNft(completion: @escaping NftCollectionsCompletion)
+//MARK: - NftCollectionService
+protocol NftCollectionService {
+    func loadNft(completion: @escaping NftCollectionCompletion)
 }
 
-//MARK: - NftCatalogService
-final class NftCatalogService: NftCatalogServiceProtocol {
+//MARK: - NftCollectionServiceImpl
+final class NftCollectionServiceImpl: NftCollectionService {
     
     //MARK: - Private properties
     private let networkClient: NetworkClient
-//    private let storage: CatalogStorageProtocol
     
     // MARK: - Initializers
     init(networkClient: NetworkClient) {
         self.networkClient = networkClient
     }
     
-    // MARK: - Public methods
-    func loadNft( completion: @escaping NftCollectionsCompletion) {
+    // MARK: - Methods
+    func loadNft(completion: @escaping NftCollectionCompletion) {
         let request = CollectionsRequest()
         networkClient.send(request: request, type: [NftCollection].self) { result in
             switch result {

@@ -17,15 +17,14 @@ protocol CatalogViewProtocol: AnyObject {
 
 //MARK: - CatalogViewController
 final class CatalogViewController: UIViewController {
-    
-    //MARK: - Properties
-    var activityIndicator = UIActivityIndicatorView()
-    
+        
     //MARK: - Private properties
     private let servicesAssembly: ServicesAssembly
     private var presenter: CatalogPresenterProtocol?
     
     //MARK: - UI Components
+    private lazy var activityIndicator = UIActivityIndicatorView()
+
     private lazy var sortButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "Catalog.sortButton"), for: .normal)
@@ -53,7 +52,7 @@ final class CatalogViewController: UIViewController {
     
     // MARK: - Initializers
     convenience init(servicesAssembly: ServicesAssembly) {
-        let presenter = CatalogPresenter(service: servicesAssembly.nftCatalogService)
+        let presenter = CatalogPresenter(service: servicesAssembly.nftCollectionService)
         self.init(servicesAssembly: servicesAssembly, presenter: presenter)
     }
     
@@ -89,10 +88,11 @@ final class CatalogViewController: UIViewController {
     }
     
     private func addViews() {
-        view.addSubview(tableView)
-        view.addSubview(activityIndicator)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        [tableView,
+         activityIndicator].forEach {
+            view.addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
     }
     
     private func layoutViews() {
@@ -150,10 +150,7 @@ extension CatalogViewController: CatalogViewProtocol {
     func reloadData() {
         tableView.reloadData()
     }
-}
 
-//MARK: - LoadingView
-extension CatalogViewController: LoadingView {
     func showLoading() {
         activityIndicator.startAnimating()
     }
@@ -205,7 +202,7 @@ extension CatalogViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        guard let model = presenter?.getModel(for: indexPath) else { return cell }
+        guard let model = presenter?.getCellModel(for: indexPath) else { return cell }
         cell.configureCell(with: model)
         cell.selectionStyle = .none
         return cell
@@ -216,7 +213,10 @@ extension CatalogViewController: UITableViewDataSource {
 extension CatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let nftCollectionViewController = NftCollectionViewController()
+        let nftCollectionViewController = NftCollectionViewController(
+            servicesAssembly: servicesAssembly,
+            collection: presenter?.NftCollections[indexPath.row]
+        )
         self.navigationController?.pushViewController(nftCollectionViewController, animated: true)
     }
 }

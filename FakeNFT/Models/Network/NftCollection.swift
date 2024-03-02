@@ -10,7 +10,7 @@ import Foundation
 struct NftCollection: Codable {
     private let createdAt: String
     let name: String
-    let cover: String
+    private let cover: String
     let nfts: [String]
     let description: String
     let author: String
@@ -23,5 +23,4 @@ struct NftCollection: Codable {
     var coverURL: URL {
         URL(string: cover.encodeURL)!
     }
-    
 }

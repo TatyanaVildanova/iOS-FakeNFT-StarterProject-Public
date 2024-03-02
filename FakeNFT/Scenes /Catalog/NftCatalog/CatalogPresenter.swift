@@ -11,7 +11,7 @@ import Foundation
 protocol CatalogPresenterProtocol {
     var view: CatalogViewProtocol? { get set }
     var NftCollections: [NftCollection] { get }
-    func getModel(for indexPath: IndexPath) -> CatalogNFTCellModel
+    func getCellModel(for indexPath: IndexPath) -> CatalogNftCellModel
     func getNftCollections()
     func sortByCount()
     func sortByName()
@@ -25,21 +25,21 @@ final class CatalogPresenter: CatalogPresenterProtocol {
     var NftCollections: [NftCollection] = []
     
     //MARK: - Private properties
-    private let service: NftCatalogServiceProtocol
+    private let service: NftCollectionService
     private let sortStorage: SortNftStorage
     
     // MARK: - Initializers
-    convenience init(service: NftCatalogServiceProtocol ){
+    convenience init(service: NftCollectionService) {
         let storage = SortNftStorage()
         self.init(service: service, sortStorage: storage)
     }
     
-    init(service: NftCatalogServiceProtocol, sortStorage: SortNftStorage) {
+    init(service: NftCollectionService, sortStorage: SortNftStorage) {
         self.service = service
         self.sortStorage = sortStorage
     }
     
-    //MARK: - Public methods
+    //MARK: - Methods
     func getNftCollections() {
         view?.showLoading()
         service.loadNft( completion: { [weak self] result in
@@ -54,11 +54,10 @@ final class CatalogPresenter: CatalogPresenterProtocol {
                 self?.view?.hideLoading()
                 self?.view?.showErrorAlert()
             }
-        }
-        )
+        })
     }
     
-    func getModel(for indexPath: IndexPath) -> CatalogNFTCellModel {
+    func getCellModel(for indexPath: IndexPath) -> CatalogNftCellModel {
         convertToCellModel(collection: NftCollections[indexPath.row])
     }
     
@@ -79,10 +78,10 @@ final class CatalogPresenter: CatalogPresenterProtocol {
     }
     
     //MARK: - Private methods
-    private func convertToCellModel(collection: NftCollection) -> CatalogNFTCellModel {
-        CatalogNFTCellModel(
-            nameNFT: collection.name,
-            countNFT: collection.nfts.count,
+    private func convertToCellModel(collection: NftCollection) -> CatalogNftCellModel {
+        CatalogNftCellModel(
+            nameNft: collection.name,
+            countNft: collection.nfts.count,
             url: collection.coverURL
         )
     }
