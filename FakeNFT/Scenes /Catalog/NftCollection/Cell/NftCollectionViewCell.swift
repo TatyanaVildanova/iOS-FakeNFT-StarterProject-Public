@@ -18,7 +18,7 @@ final class NftCollectionViewCell: UICollectionViewCell {
     //MARK: - Properties
     static let identifier = "NftCollectionViewCell"
     var indexPath: IndexPath?
-    var delegate: NftCollectionViewCellDelegate?
+    weak var delegate: NftCollectionViewCellDelegate?
     
     //MARK: - Private properties
     private var idNft: String?
