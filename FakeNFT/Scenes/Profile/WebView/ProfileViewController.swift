@@ -30,7 +30,7 @@ final class ProfileViewController: UIViewController {
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "SFProText-Bold", size: 22)
+        label.font = .headline3
         return label
     }()
     
@@ -40,7 +40,7 @@ final class ProfileViewController: UIViewController {
         link.translatesAutoresizingMaskIntoConstraints = false
         link.isEditable = false
         link.delegate = self
-        link.font = UIFont(name: "SFProText-Regular", size: 15)
+        link.font = .caption1
         link.textColor = UIColor.ypBlueUniversal
         link.isScrollEnabled = false
         return link
@@ -63,7 +63,7 @@ final class ProfileViewController: UIViewController {
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "SFProText-Regular", size: 13)
+        label.font = .caption2
         label.numberOfLines = 0
         return label
     }()

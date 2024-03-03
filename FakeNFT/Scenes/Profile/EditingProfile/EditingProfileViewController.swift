@@ -1,4 +1,3 @@
-
 import UIKit
 
 protocol EditingProfileViewControllerProtocol: AnyObject {
@@ -52,7 +51,7 @@ final class EditingProfileViewController: UIViewController {
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "SFProText-Bold", size: 22)
+        label.font = .headline3
         label.textColor = UIColor.ypBlack
         label.text = NSLocalizedString("name", comment: "")
         return label
@@ -62,7 +61,7 @@ final class EditingProfileViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.layer.cornerRadius = 12
-        textField.font = UIFont(name: "SFProText-Regular", size: 17)
+        textField.font = .bodyRegular
         textField.backgroundColor = UIColor.ypLightGrey
         let spacerView = UIView(frame:CGRect(x:0, y:0, width:16, height:10))
         textField.leftViewMode = .always
@@ -74,7 +73,7 @@ final class EditingProfileViewController: UIViewController {
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "SFProText-Bold", size: 22)
+        label.font = .headline3
         label.textColor = UIColor.ypBlack
         label.text = NSLocalizedString("description", comment: "")
         return label
@@ -84,7 +83,7 @@ final class EditingProfileViewController: UIViewController {
         let text = UITextView()
         text.translatesAutoresizingMaskIntoConstraints = false
         text.layer.cornerRadius = 12
-        text.font = UIFont(name: "SFProText-Regular", size: 17)
+        text.font = .bodyRegular
         text.backgroundColor = UIColor.ypLightGrey
         text.textContainerInset = UIEdgeInsets(top: 11, left: 16, bottom: 11, right: 16)
         return text
@@ -93,7 +92,7 @@ final class EditingProfileViewController: UIViewController {
     private lazy var siteLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "SFProText-Bold", size: 22)
+        label.font = .headline3
         label.textColor = UIColor.ypBlack
         label.text = NSLocalizedString("site", comment: "")
         return label
@@ -103,7 +102,7 @@ final class EditingProfileViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.layer.cornerRadius = 12
-        textField.font = UIFont(name: "SFProText-Regular", size: 17)
+        textField.font = .bodyRegular
         textField.backgroundColor = UIColor.ypLightGrey
         let spacerView = UIView(frame:CGRect(x:0, y:0, width:16, height:10))
         textField.leftViewMode = .always
@@ -249,3 +248,4 @@ extension EditingProfileViewController: EditingProfileViewControllerProtocol {
         siteTextField.text = profile.website
     }
 }
+

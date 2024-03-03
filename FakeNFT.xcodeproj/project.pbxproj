@@ -28,9 +28,6 @@
 		055AB7622B94759D00D78C99 /* ServicesAssemly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055AB7612B94759D00D78C99 /* ServicesAssemly.swift */; };
 		055AB7642B9475A700D78C99 /* NftService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055AB7632B9475A700D78C99 /* NftService.swift */; };
 		055AB7662B9475E200D78C99 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 055AB7652B9475E200D78C99 /* ProfileService.swift */; };
-		055AB76E2B94C9D800D78C99 /* SFProText-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 055AB76D2B94C9D800D78C99 /* SFProText-Bold.ttf */; };
-		055AB7702B94C9F900D78C99 /* SFProText-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 055AB76F2B94C9F900D78C99 /* SFProText-Medium.ttf */; };
-		055AB7722B94CA0C00D78C99 /* SFProText-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 055AB7712B94CA0C00D78C99 /* SFProText-Regular.ttf */; };
 		05B442742B7BD8A7009055C7 /* WebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B442732B7BD8A7009055C7 /* WebViewViewController.swift */; };
 		05B4428C2B7BDEA2009055C7 /* ProfileModelEditing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B4428B2B7BDEA2009055C7 /* ProfileModelEditing.swift */; };
 		05B4428E2B7BDEAD009055C7 /* ProfileModelNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B4428D2B7BDEAD009055C7 /* ProfileModelNetwork.swift */; };
@@ -96,9 +93,6 @@
 		055AB7612B94759D00D78C99 /* ServicesAssemly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServicesAssemly.swift; sourceTree = "<group>"; };
 		055AB7632B9475A700D78C99 /* NftService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NftService.swift; sourceTree = "<group>"; };
 		055AB7652B9475E200D78C99 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
-		055AB76D2B94C9D800D78C99 /* SFProText-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Bold.ttf"; sourceTree = "<group>"; };
-		055AB76F2B94C9F900D78C99 /* SFProText-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Medium.ttf"; sourceTree = "<group>"; };
-		055AB7712B94CA0C00D78C99 /* SFProText-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFProText-Regular.ttf"; sourceTree = "<group>"; };
 		05B442732B7BD8A7009055C7 /* WebViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewViewController.swift; sourceTree = "<group>"; };
 		05B4428B2B7BDEA2009055C7 /* ProfileModelEditing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModelEditing.swift; sourceTree = "<group>"; };
 		05B4428D2B7BDEAD009055C7 /* ProfileModelNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModelNetwork.swift; sourceTree = "<group>"; };
@@ -273,16 +267,6 @@
 			path = Requests;
 			sourceTree = "<group>";
 		};
-		055AB76B2B94C35000D78C99 /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-				055AB7712B94CA0C00D78C99 /* SFProText-Regular.ttf */,
-				055AB76F2B94C9F900D78C99 /* SFProText-Medium.ttf */,
-				055AB76D2B94C9D800D78C99 /* SFProText-Bold.ttf */,
-			);
-			path = Fonts;
-			sourceTree = "<group>";
-		};
 		05B442952B7BF529009055C7 /* Foundation */ = {
 			isa = PBXGroup;
 			children = (
@@ -403,7 +387,6 @@
 		E1CD40DA2A96BE9B00BE7FE8 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				055AB76B2B94C35000D78C99 /* Fonts */,
 				3F68069F29CBBAF200B4F915 /* Assets.xcassets */,
 				3F6806A129CBBAF200B4F915 /* LaunchScreen.storyboard */,
 				E1CD40DB2A96BECC00BE7FE8 /* Localizable.strings */,
@@ -526,11 +509,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F6806A329CBBAF200B4F915 /* LaunchScreen.storyboard in Resources */,
-				055AB7722B94CA0C00D78C99 /* SFProText-Regular.ttf in Resources */,
 				E1CD40DC2A96BECC00BE7FE8 /* Localizable.strings in Resources */,
 				3F6806A029CBBAF200B4F915 /* Assets.xcassets in Resources */,
-				055AB76E2B94C9D800D78C99 /* SFProText-Bold.ttf in Resources */,
-				055AB7702B94C9F900D78C99 /* SFProText-Medium.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

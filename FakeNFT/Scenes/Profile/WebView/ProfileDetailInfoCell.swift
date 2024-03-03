@@ -7,7 +7,7 @@ final class ProfileDetailInfoCell: UITableViewCell {
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "SFProText-Bold", size: 17)
+        label.font = .bodyBold
         label.textColor = UIColor.ypBlack
         return label
     }()
