@@ -14,8 +14,9 @@
     - Переход в раздел "О разработчике" - (est: 20 min; fact: 20 min)
     - Верстка раздела "О разработчике" - (est: 20 min; fact: 30 min)
     - Скрытие клавиатуры при нажатии на экран - (est: 20 min; fact: 35 min)
+    - Верстка в разделе редактирование - (est: 20 min; fact: 35 min)
     
-`Total:` est: 110 min; fact: 145 min.
+`Total:` est: 130 min; fact: 215 min.
     
 ## Module 2:
 ##### Экран "Мои NFT"
@@ -23,9 +24,9 @@
     - Логика "Сортировки" - (est: 20 min; fact: x min)
     - Верстка ячеек с NFT картинками - (est: 20 min; fact: x min)
     - Логика заполнения ячеек с картинками - (est: 20 min; fact: x min)
-    - Верстка в разделе редактирование - (est: 20 min; fact: 35 min)
     
-`Total:` est: 100 min; fact: x min.
+    
+`Total:` est: 80 min; fact: x min.
     
     
 ## Module 3:
