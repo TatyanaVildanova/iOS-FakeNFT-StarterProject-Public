@@ -13,6 +13,7 @@ typealias ProfileCompletion = (Result<Profile, Error>) -> Void
 protocol ProfileService {
     func loadProfile(completion: @escaping ProfileCompletion)
     func likeState(for id:String) -> Bool
+    func setLike(id: String, completion: @escaping ProfileCompletion)
 }
 
 //MARK: - ProfileServiceImpl
@@ -47,5 +48,30 @@ final class ProfileServiceImpl: ProfileService {
     
     func likeState(for id: String) -> Bool {
         storage.getLike(with: id) != nil
+    }
+    
+    func setLike(id: String, completion: @escaping ProfileCompletion) {
+        var likes = storage.likes
+        if let _ = storage.getLike(with: id) {
+            likes.remove(id)
+        } else {
+            likes.insert(id)
+        }
+        
+        let request = LikeRequest(likes: likes)
+        networkClient.send(request: request, type: Profile.self) { [weak storage] result in
+            switch result {
+            case .success(let profile):
+                storage?.likes.removeAll()
+                if !profile.likes.isEmpty {
+                    profile.likes.forEach {
+                        storage?.saveLike($0)
+                    }
+                }
+                completion(.success(profile))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 }

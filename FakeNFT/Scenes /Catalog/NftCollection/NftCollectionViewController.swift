@@ -9,12 +9,21 @@ import UIKit
 
 //MARK: - NftCollectionViewProtocol
 protocol NftCollectionViewProtocol: AnyObject {
-    func reloadData()
+    func updateCollectionView()
     func setupData(name: String, cover: URL, author: String, description: String)
     func updateCell(indexPath: IndexPath)
     func showLoading()
     func hideLoading()
     func showErrorAlert()
+}
+
+//MARK: - CollectionViewSettings
+private struct CollectionViewSettings {
+    static let interitemSpacing: CGFloat = 9
+    static let lineSpacing: CGFloat = 8
+    static let itemsPerLine: CGFloat = 3
+    static let collectionItemWidth: CGFloat = 108
+    static let collectionItemHeight: CGFloat = 192
 }
 
 //MARK: - NftCollectionViewController
@@ -23,7 +32,7 @@ final class NftCollectionViewController: UIViewController {
     //MARK: - Private properties
     private let servicesAssembly: ServicesAssembly
     private var presenter: NftCollectionPresenterProtocol?
-    
+
     //MARK: - UI Components
     private lazy var activityIndicator = UIActivityIndicatorView()
     
@@ -31,6 +40,9 @@ final class NftCollectionViewController: UIViewController {
         let scrollView = UIScrollView()
         scrollView.isScrollEnabled = true
         scrollView.showsVerticalScrollIndicator = true
+        scrollView.contentSize = CGSize(
+            width: view.frame.width,
+            height: presenter?.contentSize ?? view.frame.height)
         return scrollView
     }()
     
@@ -156,8 +168,7 @@ final class NftCollectionViewController: UIViewController {
             
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: -100),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            //TODO: обновление высоты contentView в зависимости от количества ячеек коллекции
-            contentView.heightAnchor.constraint(equalToConstant: 1000),
+            contentView.heightAnchor.constraint(equalToConstant: scrollView.contentSize.height),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
@@ -200,7 +211,9 @@ final class NftCollectionViewController: UIViewController {
 //MARK: - Actions
 @objc extension NftCollectionViewController {
     private func didTapAuthorButton() {
-        //TODO: переход на экран автора
+        let url = presenter?.getAuthorURL()
+        let webView = AuthorViewController(url: url!)
+        navigationController?.pushViewController(webView, animated: true)
     }
 }
 
@@ -222,7 +235,7 @@ extension NftCollectionViewController: NftCollectionViewProtocol {
         collectionView.reloadItems(at: [indexPath])
     }
     
-    func reloadData() {
+    func updateCollectionView() {
         collectionView.reloadData()
     }
     
@@ -266,22 +279,22 @@ extension NftCollectionViewController: NftCollectionViewProtocol {
 //MARK: - NftCollectionViewCellDelegate
 extension NftCollectionViewController: NftCollectionViewCellDelegate {
     func updateOrder(for indexPath: IndexPath) {
-        //TODO: добавление в корзину
+        presenter?.updateOrderState(for: indexPath)
     }
     
     func updateLike(for indexPath: IndexPath, state: Bool) {
-        //TODO: добавление в избранное
+        presenter?.updateLikeState(for: indexPath, state: state)
     }
 }
 
 //MARK: - UICollectionViewDataSource
 extension NftCollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        presenter?.nfts.count ?? 0
+        guard let presenter = presenter else { return 0 }
+        return presenter.numberOfItems
     }
-    
-    func collectionView(
-        _ collectionView: UICollectionView,
+        func collectionView(
+            _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         
@@ -309,7 +322,10 @@ extension NftCollectionViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        CGSize(width: 108, height: 192)
+        CGSize(
+            width: CollectionViewSettings.collectionItemWidth,
+            height: CollectionViewSettings.collectionItemHeight
+        )
     }
     
     func collectionView(
@@ -317,7 +333,7 @@ extension NftCollectionViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         minimumInteritemSpacingForSectionAt section: Int
     ) -> CGFloat {
-        9
+        CollectionViewSettings.interitemSpacing
     }
     
     func collectionView(
@@ -325,6 +341,6 @@ extension NftCollectionViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         minimumLineSpacingForSectionAt section: Int
     ) -> CGFloat {
-        8
+        CollectionViewSettings.lineSpacing
     }
 }

@@ -11,9 +11,14 @@ import Foundation
 protocol NftCollectionPresenterProtocol: AnyObject {
     var nfts: [Nft] { get }
     var view: NftCollectionViewProtocol? { get set }
+    var numberOfItems: Int { get }
+    var contentSize: Double? { get }
     func getNftCollection()
     func getCellModel(for indexPath: IndexPath) -> NftCollectionCellModel
     func loadData()
+    func updateLikeState(for indexPath: IndexPath, state: Bool)
+    func updateOrderState(for indexPath: IndexPath)
+    func getAuthorURL() -> URL?
 }
 
 //MARK: - NftCollectionPresenter
@@ -23,16 +28,26 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
     weak var view: NftCollectionViewProtocol?
     var nfts: [Nft] = []
     
+    var numberOfItems: Int {
+        nfts.count
+    }
+    
+    var contentSize: Double? {
+        guard let count = nftCollection?.nfts.count else { return nil }
+        let lineSize = (Double(count) / 3).rounded(.up) * (192 + 8)
+        let size = Double(490 + lineSize)
+        return size
+    }
+    
     //MARK: - Private properties
     private let service: ServicesAssembly
     private var profile: Profile?
     private var nftCollection: NftCollection?
-
+    
     // MARK: - Initializers
     init(service: ServicesAssembly, nftCollection: NftCollection?) {
         self.service = service
         self.nftCollection = nftCollection
-        self.getProfile()
     }
     
     //MARK: - Methods
@@ -45,7 +60,7 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
                 case .success(let nft):
                     self?.nfts.append(nft)
                     self?.view?.hideLoading()
-                    self?.view?.reloadData()
+                    self?.view?.updateCollectionView()
                 case .failure(let error):
                     self?.view?.hideLoading()
                     self?.view?.showErrorAlert()
@@ -53,6 +68,37 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
                 }
             })
         }
+    }
+    
+    func updateLikeState(for indexPath: IndexPath, state: Bool) {
+        service.profileService.setLike(id: nfts[indexPath.row].id, completion: { [weak self] result in
+            switch result {
+            case .success(let profile):
+                self?.profile = profile
+                self?.view?.updateCell(indexPath: indexPath)
+            case .failure(let error):
+                self?.view?.showErrorAlert()
+                print(error)
+            }
+        })
+    }
+    
+    func updateOrderState(for indexPath: IndexPath) {
+        service.orderService.setOrders(id: nfts[indexPath.row].id, completion: { [weak self] result in
+            switch result {
+            case .success:
+                self?.view?.updateCell(indexPath: indexPath)
+            case .failure(let error):
+                self?.view?.showErrorAlert()
+                print(error)
+            }
+        })
+    }
+    
+    func getAuthorURL() -> URL? {
+        //Тут должен быть url на автора коллекции nfts[0].author, но в API лежит нерабочая ссылка
+        let url = URL(string: "https://practicum.yandex.ru")
+        return url
     }
     
     func loadData() {
@@ -78,16 +124,5 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
             isInTheCart: service.orderService.cartState(for: nft.id),
             rating: nft.rating,
             url: nft.images[0])
-    }
-    
-    private func getProfile() {
-        service.profileService.loadProfile(completion: {[weak self] result in
-            switch result {
-            case .success(let profile):
-                self?.profile = profile
-            case .failure(let error):
-                print(error)
-            }
-        })
     }
 }
