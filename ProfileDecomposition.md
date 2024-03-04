@@ -20,13 +20,13 @@
     
 ## Module 2:
 ##### Экран "Мои NFT"
-    - Верстка экрана "Мои NFT" - (est: 20 min; fact: x min)
-    - Логика "Сортировки" - (est: 20 min; fact: x min)
-    - Верстка ячеек с NFT картинками - (est: 20 min; fact: x min)
-    - Логика заполнения ячеек с картинками - (est: 20 min; fact: x min)
+    - Верстка экрана "Мои NFT" - (est: 20 min; fact: 30 min)
+    - Логика "Сортировки" - (est: 20 min; fact: 30 min)
+    - Верстка ячеек с NFT картинками - (est: 20 min; fact: 30 min)
+    - Логика заполнения ячеек с картинками - (est: 20 min; fact: 30 min)
     
     
-`Total:` est: 80 min; fact: x min.
+`Total:` est: 80 min; fact: 120 min.
     
     
 ## Module 3:
