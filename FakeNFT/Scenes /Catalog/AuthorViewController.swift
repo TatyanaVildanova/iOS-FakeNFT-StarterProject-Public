@@ -28,9 +28,12 @@ final class AuthorViewController: UIViewController {
     }
     
     //MARK: - Lifecycle
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        load()
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
-        load()
         configure()
     }
     

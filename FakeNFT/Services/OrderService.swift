@@ -65,10 +65,8 @@ final class OrderServiceImpl: OrderService {
             case .success(let orders):
                 storage?.saveOrderId(orderId: orders.id)
                 storage?.orders.removeAll()
-                if !orders.nfts.isEmpty {
-                    orders.nfts.forEach {
-                        storage?.saveOrders($0)
-                    }
+                orders.nfts.forEach {
+                    storage?.saveOrders($0)
                 }
                 completion(.success(orders))
             case .failure(let error):

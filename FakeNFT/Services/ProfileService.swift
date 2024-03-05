@@ -11,7 +11,7 @@ typealias ProfileCompletion = (Result<Profile, Error>) -> Void
 
 //MARK: - ProfileService
 protocol ProfileService {
-    func loadProfile(completion: @escaping ProfileCompletion)
+    func loadLikes(completion: @escaping ProfileCompletion)
     func likeState(for id:String) -> Bool
     func setLike(id: String, completion: @escaping ProfileCompletion)
 }
@@ -27,11 +27,11 @@ final class ProfileServiceImpl: ProfileService {
     init(networkClient: NetworkClient, storage: NftStorage) {
         self.networkClient = networkClient
         self.storage = storage
-        loadProfile { _ in }
+        loadLikes { _ in }
     }
     
     // MARK: - Methods
-    func loadProfile(completion: @escaping ProfileCompletion) {
+    func loadLikes(completion: @escaping ProfileCompletion) {
         let request = ProfileRequest()
         networkClient.send(request: request, type: Profile.self) { [weak storage] result in
             switch result {
@@ -63,10 +63,8 @@ final class ProfileServiceImpl: ProfileService {
             switch result {
             case .success(let profile):
                 storage?.likes.removeAll()
-                if !profile.likes.isEmpty {
-                    profile.likes.forEach {
-                        storage?.saveLike($0)
-                    }
+                profile.likes.forEach {
+                    storage?.saveLike($0)
                 }
                 completion(.success(profile))
             case .failure(let error):

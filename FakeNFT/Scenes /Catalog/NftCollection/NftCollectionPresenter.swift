@@ -25,6 +25,7 @@ protocol NftCollectionPresenterProtocol: AnyObject {
 final class NftCollectionPresenter: NftCollectionPresenterProtocol {
     
     //MARK: - Properties
+    let dispatchGroup = DispatchGroup()
     weak var view: NftCollectionViewProtocol?
     var nfts: [Nft] = []
     
@@ -38,7 +39,7 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
         let size = Double(490 + lineSize)
         return size
     }
-    
+
     //MARK: - Private properties
     private let service: ServicesAssembly
     private var profile: Profile?
@@ -55,19 +56,32 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
         guard let nftCollection else { return }
         nftCollection.nfts.forEach {
             view?.showLoading()
+            dispatchGroup.enter()
             service.nftService.loadNft(id: $0, completion: { [weak self] result in
+                defer { self?.dispatchGroup.leave() }
                 switch result {
                 case .success(let nft):
                     self?.nfts.append(nft)
-                    self?.view?.hideLoading()
-                    self?.view?.updateCollectionView()
+                    self?.getLikeState(nft: nft)
+                    self?.getCartState(nft: nft)
                 case .failure(let error):
-                    self?.view?.hideLoading()
                     self?.view?.showErrorAlert()
                     print(error)
                 }
             })
         }
+        dispatchGroup.notify(queue: .main) {
+            self.view?.hideLoading()
+            self.view?.updateCollectionView()
+        }
+    }
+    
+    func getLikeState(nft: Nft) -> Bool {
+        service.profileService.likeState(for: nft.id)
+    }
+    
+    func getCartState(nft: Nft) -> Bool {
+        service.orderService.cartState(for: nft.id)
     }
     
     func updateLikeState(for indexPath: IndexPath, state: Bool) {
@@ -97,8 +111,9 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
     
     func getAuthorURL() -> URL? {
         //Тут должен быть url на автора коллекции nfts[0].author, но в API лежит нерабочая ссылка
-        let url = URL(string: "https://practicum.yandex.ru")
-        return url
+        var url =  URL(string: "https://practicum.yandex.ru")
+        var authorURL = url
+        return authorURL
     }
     
     func loadData() {
@@ -120,8 +135,8 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
             id: nft.id,
             nameNft: nft.name,
             price: nft.price,
-            isLiked: service.profileService.likeState(for: nft.id),
-            isInTheCart: service.orderService.cartState(for: nft.id),
+            isLiked: getLikeState(nft: nft),
+            isInTheCart: getCartState(nft: nft),
             rating: nft.rating,
             url: nft.images[0])
     }

@@ -212,7 +212,8 @@ final class NftCollectionViewController: UIViewController {
 @objc extension NftCollectionViewController {
     private func didTapAuthorButton() {
         let url = presenter?.getAuthorURL()
-        let webView = AuthorViewController(url: url!)
+        guard let url = url else { return }
+        let webView = AuthorViewController(url: url)
         navigationController?.pushViewController(webView, animated: true)
     }
 }
@@ -293,6 +294,7 @@ extension NftCollectionViewController: UICollectionViewDataSource {
         guard let presenter = presenter else { return 0 }
         return presenter.numberOfItems
     }
+    
         func collectionView(
             _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
