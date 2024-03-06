@@ -171,10 +171,6 @@ final class NftCollectionViewCell: UICollectionViewCell {
     private func showLoading() {
         activityIndicator.startAnimating()
     }
-    
-    private func hideLoading() {
-        activityIndicator.stopAnimating()
-    }
 }
 
 //MARK: - Actions
@@ -182,10 +178,12 @@ final class NftCollectionViewCell: UICollectionViewCell {
     private func didTapLikeButton() {
         guard let indexPath else { return }
         delegate?.updateLike(for: indexPath, state: likeState)
+        activityIndicator.startAnimating()
     }
     
     private func didTapCartButton() {
         guard let indexPath else { return }
         delegate?.updateOrder(for: indexPath)
+        activityIndicator.startAnimating()
     }
 }

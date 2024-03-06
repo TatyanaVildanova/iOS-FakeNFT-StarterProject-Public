@@ -20,7 +20,7 @@ struct LikeRequest: NetworkRequest {
     //MARK: - Properties
     let httpMethod: HttpMethod = .put
     var dto: Encodable?
-    var likes: Set<String>
+    var likes: [String]
     var body: Data? {
         return likesToString().data(using: .utf8)
     }
@@ -30,7 +30,7 @@ struct LikeRequest: NetworkRequest {
     }
     
     // MARK: - Initializers
-    init(dto: Encodable? = nil, likes: Set<String>) {
+    init(dto: Encodable? = nil, likes: [String]) {
         self.dto = dto
         self.likes = likes
     }
@@ -41,9 +41,9 @@ struct LikeRequest: NetworkRequest {
         if likes.isEmpty {
             likeString = ""
         } else {
-            for (index , like) in likes.enumerated() {
+            for (index, like) in likes.enumerated() {
                 likeString += like
-                if index != likes.count-1 {
+                if index != likes.count - 1 {
                     likeString += "&likes="
                 }
             }

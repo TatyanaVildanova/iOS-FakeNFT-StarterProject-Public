@@ -28,20 +28,18 @@ final class AuthorViewController: UIViewController {
     }
     
     //MARK: - Lifecycle
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        load()
-    }
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
+        load()
     }
     
     //MARK: - Private methods
     private func load() {
-        webView.load(URLRequest(url: url!))
+        guard let url = url else { return }
+        webView.load(URLRequest(url: url))
     }
-
+    
     private func configure() {
         view.backgroundColor = UIColor(named: "YP White")
         addViews()
@@ -51,7 +49,7 @@ final class AuthorViewController: UIViewController {
     private func addViews() {
         view.addSubview(webView)
         webView.translatesAutoresizingMaskIntoConstraints = false
-
+        
     }
     private func layoutViews() {
         NSLayoutConstraint.activate([

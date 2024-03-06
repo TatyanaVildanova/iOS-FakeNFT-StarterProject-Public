@@ -26,15 +26,13 @@ final class ServicesAssembly {
     
     var profileService: ProfileService {
         ProfileServiceImpl(
-            networkClient: networkClient,
-            storage: nftStorage
+            networkClient: networkClient
         )
     }
     
     var orderService: OrderService {
         OrderServiceImpl(
-            networkClient: networkClient,
-            storage: nftStorage
+            networkClient: networkClient
         )
     }
 }

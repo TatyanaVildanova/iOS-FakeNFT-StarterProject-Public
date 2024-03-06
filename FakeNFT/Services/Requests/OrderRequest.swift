@@ -20,7 +20,7 @@ struct OrderPutRequest: NetworkRequest {
     //MARK: - Properties
     let httpMethod: HttpMethod = .put
     var id: String
-    var orders: Set<String>
+    var orders: [String]
     var endpoint: URL? {
         URL(string: "\(RequestConstants.baseURL)/api/v1/orders/1")
     }
@@ -30,20 +30,20 @@ struct OrderPutRequest: NetworkRequest {
     }
     
     // MARK: - Initializers
-    init(id:String, orders: Set<String>) {
+    init(id: String, orders: [String]) {
         self.orders = orders
         self.id = id
     }
     
     // MARK: - Private methods
-    private func ordersToString() ->String {
+    private func ordersToString() -> String {
         var ordersString = "nfts="
         if orders.isEmpty {
             ordersString += ""
         } else {
-            for (index , order) in orders.enumerated() {
+            for (index, order) in orders.enumerated() {
                 ordersString += order
-                if index != orders.count-1 {
+                if index != orders.count - 1 {
                     ordersString += "&nfts="
                 }
             }

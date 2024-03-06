@@ -9,7 +9,7 @@ import Foundation
 
 //MARK: - NftCollectionPresenterProtocol
 protocol NftCollectionPresenterProtocol: AnyObject {
-    var nfts: [Nft] { get }
+//    var nfts: [Nft] { get }
     var view: NftCollectionViewProtocol? { get set }
     var numberOfItems: Int { get }
     var contentSize: Double? { get }
@@ -25,9 +25,8 @@ protocol NftCollectionPresenterProtocol: AnyObject {
 final class NftCollectionPresenter: NftCollectionPresenterProtocol {
     
     //MARK: - Properties
-    let dispatchGroup = DispatchGroup()
     weak var view: NftCollectionViewProtocol?
-    var nfts: [Nft] = []
+    
     
     var numberOfItems: Int {
         nfts.count
@@ -39,11 +38,15 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
         let size = Double(490 + lineSize)
         return size
     }
-
+        
     //MARK: - Private properties
     private let service: ServicesAssembly
     private var profile: Profile?
     private var nftCollection: NftCollection?
+    
+    private var nfts: [Nft] = []
+    private var likes: [String] = []
+    private var orders: [String] = []
     
     // MARK: - Initializers
     init(service: ServicesAssembly, nftCollection: NftCollection?) {
@@ -53,42 +56,67 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
     
     //MARK: - Methods
     func getNftCollection() {
+        let dispatchGroup = DispatchGroup()
+
         guard let nftCollection else { return }
-        nftCollection.nfts.forEach {
-            view?.showLoading()
-            dispatchGroup.enter()
-            service.nftService.loadNft(id: $0, completion: { [weak self] result in
-                defer { self?.dispatchGroup.leave() }
-                switch result {
-                case .success(let nft):
-                    self?.nfts.append(nft)
-                    self?.getLikeState(nft: nft)
-                    self?.getCartState(nft: nft)
-                case .failure(let error):
-                    self?.view?.showErrorAlert()
-                    print(error)
-                }
-            })
-        }
+        view?.showLoading()
+        
+        dispatchGroup.enter()
+        service.profileService.loadLikes(completion: { [weak self] result in
+            defer { dispatchGroup.leave() }
+            switch result {
+            case .success(let profile):
+                self?.likes = profile.likes
+            case .failure(let error):
+                print(error)
+            }
+        })
+        
+        dispatchGroup.enter()
+        service.orderService.loadOrders(completion: { [weak self] result in
+            defer { dispatchGroup.leave() }
+            switch result {
+            case .success(let orders):
+                self?.orders = orders.nfts
+            case .failure(let error):
+                print(error)
+            }
+        })
+        
         dispatchGroup.notify(queue: .main) {
-            self.view?.hideLoading()
-            self.view?.updateCollectionView()
+            nftCollection.nfts.forEach {
+                self.service.nftService.loadNft(id: $0, completion: { [weak self] result in
+                    switch result {
+                    case .success(let nft):
+                        self?.nfts.append(nft)
+                        self?.view?.hideLoading()
+                        self?.view?.updateCollectionView()
+                    case .failure(let error):
+                        self?.view?.showErrorAlert()
+                        print(error)
+                    }
+                })
+            }
         }
-    }
-    
-    func getLikeState(nft: Nft) -> Bool {
-        service.profileService.likeState(for: nft.id)
-    }
-    
-    func getCartState(nft: Nft) -> Bool {
-        service.orderService.cartState(for: nft.id)
     }
     
     func updateLikeState(for indexPath: IndexPath, state: Bool) {
-        service.profileService.setLike(id: nfts[indexPath.row].id, completion: { [weak self] result in
+        let nftId = nfts[indexPath.row].id
+        var updatedLikes = self.likes
+        
+        if updatedLikes.contains(nftId) {
+            updatedLikes.removeAll { $0 == nftId }
+        } else {
+            updatedLikes.append(nftId)
+        }
+        self.likes = updatedLikes
+        
+        service.profileService.setLike(id: nftId, likes: self.likes, completion: { [weak self] result in
             switch result {
             case .success(let profile):
                 self?.profile = profile
+                guard !profile.likes.isEmpty else { return }
+                self?.likes = profile.likes
                 self?.view?.updateCell(indexPath: indexPath)
             case .failure(let error):
                 self?.view?.showErrorAlert()
@@ -98,9 +126,21 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
     }
     
     func updateOrderState(for indexPath: IndexPath) {
-        service.orderService.setOrders(id: nfts[indexPath.row].id, completion: { [weak self] result in
+        let nftId = nfts[indexPath.row].id
+        var updatedOrders = self.orders
+        
+        if updatedOrders.contains(nftId) {
+            updatedOrders.removeAll { $0 == nftId }
+        } else {
+            updatedOrders.append(nftId)
+        }
+        self.orders = updatedOrders
+        
+        service.orderService.setOrders(id: nftId, orders: self.orders, completion: { [weak self] result in
             switch result {
-            case .success:
+            case .success(let orders):
+                guard !orders.nfts.isEmpty else { return }
+                self?.orders = orders.nfts
                 self?.view?.updateCell(indexPath: indexPath)
             case .failure(let error):
                 self?.view?.showErrorAlert()
@@ -111,8 +151,7 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
     
     func getAuthorURL() -> URL? {
         //Тут должен быть url на автора коллекции nfts[0].author, но в API лежит нерабочая ссылка
-        var url =  URL(string: "https://practicum.yandex.ru")
-        var authorURL = url
+        let authorURL = URL(string: "https://practicum.yandex.ru")
         return authorURL
     }
     
@@ -135,9 +174,13 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
             id: nft.id,
             nameNft: nft.name,
             price: nft.price,
-            isLiked: getLikeState(nft: nft),
-            isInTheCart: getCartState(nft: nft),
+            isLiked: likes.contains(nft.id),
+            isInTheCart: orders.contains(nft.id),
             rating: nft.rating,
             url: nft.images[0])
     }
+        
+//    private func getCartState(nft: Nft) -> Bool {
+//        service.orderService.cartState(for: nft.id)
+//    }
 }
