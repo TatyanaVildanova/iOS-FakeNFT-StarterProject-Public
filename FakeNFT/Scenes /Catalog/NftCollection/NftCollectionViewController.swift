@@ -283,8 +283,8 @@ extension NftCollectionViewController: NftCollectionViewCellDelegate {
         presenter?.updateOrderState(for: indexPath)
     }
     
-    func updateLike(for indexPath: IndexPath, state: Bool) {
-        presenter?.updateLikeState(for: indexPath, state: state)
+    func updateLike(for indexPath: IndexPath) {
+        presenter?.updateLikeState(for: indexPath)
     }
 }
 

@@ -8,7 +8,7 @@
 import UIKit
 
 protocol NftCollectionViewCellDelegate: AnyObject {
-    func updateLike(for: IndexPath, state: Bool)
+    func updateLike(for: IndexPath)
     func updateOrder(for: IndexPath)
 }
 
@@ -21,8 +21,7 @@ final class NftCollectionViewCell: UICollectionViewCell {
     weak var delegate: NftCollectionViewCellDelegate?
     
     //MARK: - Private properties
-    private var idNft: String?
-    private var likeState: Bool = false
+    private var nftId: String?
     
     //MARK: - UI Components
     private lazy var activityIndicator = UIActivityIndicatorView()
@@ -99,7 +98,7 @@ final class NftCollectionViewCell: UICollectionViewCell {
     
     //MARK: - Public methods
     func configureCell(with model: NftCollectionCellModel) {
-        self.idNft = model.id
+        nftId = model.id
         imageView.kf.setImage(with: model.url)
         nameLabel.text = model.nameNft.components(separatedBy: " ").first
         priceLabel.text = String(model.price) + " ETH"
@@ -109,8 +108,7 @@ final class NftCollectionViewCell: UICollectionViewCell {
     }
     
     func setLike(isLiked: Bool) -> UIImage? {
-        self.likeState = isLiked
-        return likeState ? UIImage(named: "activeLike") : UIImage(named: "noActiveLike")
+         isLiked ? UIImage(named: "activeLike") : UIImage(named: "noActiveLike")
     }
     
     func setCart(isInTheCart: Bool) -> UIImage? {
@@ -177,7 +175,7 @@ final class NftCollectionViewCell: UICollectionViewCell {
 @objc extension NftCollectionViewCell {
     private func didTapLikeButton() {
         guard let indexPath else { return }
-        delegate?.updateLike(for: indexPath, state: likeState)
+        delegate?.updateLike(for: indexPath)
         activityIndicator.startAnimating()
     }
     

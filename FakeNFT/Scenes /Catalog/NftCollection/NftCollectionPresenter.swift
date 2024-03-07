@@ -9,14 +9,13 @@ import Foundation
 
 //MARK: - NftCollectionPresenterProtocol
 protocol NftCollectionPresenterProtocol: AnyObject {
-//    var nfts: [Nft] { get }
     var view: NftCollectionViewProtocol? { get set }
     var numberOfItems: Int { get }
     var contentSize: Double? { get }
     func getNftCollection()
     func getCellModel(for indexPath: IndexPath) -> NftCollectionCellModel
     func loadData()
-    func updateLikeState(for indexPath: IndexPath, state: Bool)
+    func updateLikeState(for indexPath: IndexPath)
     func updateOrderState(for indexPath: IndexPath)
     func getAuthorURL() -> URL?
 }
@@ -26,7 +25,6 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
     
     //MARK: - Properties
     weak var view: NftCollectionViewProtocol?
-    
     
     var numberOfItems: Int {
         nfts.count
@@ -38,12 +36,13 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
         let size = Double(490 + lineSize)
         return size
     }
-        
+    
+    let userInitiatedQueue = DispatchQueue.global(qos: .userInitiated)
+    
     //MARK: - Private properties
     private let service: ServicesAssembly
     private var profile: Profile?
     private var nftCollection: NftCollection?
-    
     private var nfts: [Nft] = []
     private var likes: [String] = []
     private var orders: [String] = []
@@ -57,7 +56,7 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
     //MARK: - Methods
     func getNftCollection() {
         let dispatchGroup = DispatchGroup()
-
+        
         guard let nftCollection else { return }
         view?.showLoading()
         
@@ -88,7 +87,9 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
                 self.service.nftService.loadNft(id: $0, completion: { [weak self] result in
                     switch result {
                     case .success(let nft):
-                        self?.nfts.append(nft)
+                        self?.userInitiatedQueue.async {
+                            self?.nfts.append(nft)
+                        }
                         self?.view?.hideLoading()
                         self?.view?.updateCollectionView()
                     case .failure(let error):
@@ -100,7 +101,7 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
         }
     }
     
-    func updateLikeState(for indexPath: IndexPath, state: Bool) {
+    func updateLikeState(for indexPath: IndexPath) {
         let nftId = nfts[indexPath.row].id
         var updatedLikes = self.likes
         
@@ -114,9 +115,11 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
         service.profileService.setLike(id: nftId, likes: self.likes, completion: { [weak self] result in
             switch result {
             case .success(let profile):
-                self?.profile = profile
-                guard !profile.likes.isEmpty else { return }
-                self?.likes = profile.likes
+                self?.userInitiatedQueue.async {
+                    self?.profile = profile
+                    guard !profile.likes.isEmpty else { return }
+                    self?.likes = profile.likes
+                }
                 self?.view?.updateCell(indexPath: indexPath)
             case .failure(let error):
                 self?.view?.showErrorAlert()
@@ -139,8 +142,10 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
         service.orderService.setOrders(id: nftId, orders: self.orders, completion: { [weak self] result in
             switch result {
             case .success(let orders):
-                guard !orders.nfts.isEmpty else { return }
-                self?.orders = orders.nfts
+                self?.userInitiatedQueue.async {
+                    guard !orders.nfts.isEmpty else { return }
+                    self?.orders = orders.nfts
+                }
                 self?.view?.updateCell(indexPath: indexPath)
             case .failure(let error):
                 self?.view?.showErrorAlert()
@@ -150,7 +155,7 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
     }
     
     func getAuthorURL() -> URL? {
-        //Тут должен быть url на автора коллекции nfts[0].author, но в API лежит нерабочая ссылка
+        //Тут должен быть url на автора коллекции, но в API лежит нерабочая ссылка
         let authorURL = URL(string: "https://practicum.yandex.ru")
         return authorURL
     }
@@ -179,8 +184,4 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
             rating: nft.rating,
             url: nft.images[0])
     }
-        
-//    private func getCartState(nft: Nft) -> Bool {
-//        service.orderService.cartState(for: nft.id)
-//    }
 }
