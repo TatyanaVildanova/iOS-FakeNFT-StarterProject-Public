@@ -32,7 +32,7 @@ final class MyNFTViewController: UITableViewController, MyNFTViewControllerProto
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = NSLocalizedString("myNFT.CapLabelText", comment: "")
-        label.font = UIFont(name: "SFProText-Bold", size: 17);
+        label.font = .bodyBold
         label.isHidden = true
         return label
     }()

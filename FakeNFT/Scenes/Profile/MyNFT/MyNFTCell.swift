@@ -1,12 +1,12 @@
 import UIKit
 
 protocol MyNFTCellView: AnyObject, LoadingView {
-    var presenter: MyNFTCellPresenterProtocol? { get set }
-    func configereCell()
+    //    var presenter: MyNFTCellPresenterProtocol? { get set }
+    //    func configereCell()
     func setImage(data: Data)
-    func enabledLikeButton()
-    func unenabledLikeButton()
-    func updateLikeImage()
+    //    func enabledLikeButton()
+    //    func unenabledLikeButton()
+    //    func updateLikeImage()
 }
 
 final class MyNFTCell: UITableViewCell, MyNFTCellView {
@@ -24,7 +24,7 @@ final class MyNFTCell: UITableViewCell, MyNFTCellView {
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "SFProText-Bold", size: 17)
+        label.font = .bodyBold
         label.numberOfLines = 2
         return label
     }()
@@ -32,7 +32,7 @@ final class MyNFTCell: UITableViewCell, MyNFTCellView {
     private lazy var autorLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "SFProText-Regular", size: 12)
+        label.font = .caption2
         label.numberOfLines = 2
         return label
     }()
@@ -51,7 +51,7 @@ final class MyNFTCell: UITableViewCell, MyNFTCellView {
         return stack
     }()
     
-    internal lazy var activityIndicator: UIActivityIndicatorView = {
+    lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView()
         indicator.translatesAutoresizingMaskIntoConstraints = false
         return indicator
@@ -60,8 +60,8 @@ final class MyNFTCell: UITableViewCell, MyNFTCellView {
     private lazy var priceTitleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "SFProText-Regular", size: 13)
-        label.text = NSLocalizedString("price", comment: "")
+        label.font = .caption2
+        // label.text = NSLocalizedString("price", comment: "")
         label.numberOfLines = 0
         return label
     }()
@@ -69,7 +69,7 @@ final class MyNFTCell: UITableViewCell, MyNFTCellView {
     private lazy var priceLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "SFProText-Bold", size: 17)
+        label.font = .bodyBold
         label.numberOfLines = 0
         return label
     }()
@@ -96,7 +96,7 @@ final class MyNFTCell: UITableViewCell, MyNFTCellView {
         button.addTarget(self, action: #selector(likeButtonDidTapped), for: .touchUpInside)
         return button
     }()
-
+    
     var presenter: MyNFTCellPresenterProtocol?
     
     override func prepareForReuse() {
@@ -109,10 +109,9 @@ final class MyNFTCell: UITableViewCell, MyNFTCellView {
         addSubviews()
         
         nameLabel.text = presenter?.nft?.name
-        autorLabel.text = "от John Doe" // TODO: Поменять когда сервер начнет отдавать нормальные данные
+        autorLabel.text = "\(presenter?.nft?.price ?? 0) ETH"
         ratingView.setRating(rating: presenter?.nft?.rating ?? 0 / 2)
-        priceLabel.text = "\(presenter?.nft?.price ?? 0) ETN"
-
+        
         updateLikeImage()
         presenter?.loadImage()
     }
@@ -145,23 +144,23 @@ final class MyNFTCell: UITableViewCell, MyNFTCellView {
         contentView.addSubview(iconImageView)
         iconImageView.addSubview(activityIndicator)
         contentView.addSubview(likeButton)
-
+        
         contentView.addSubview(centralStack)
         centralStack.addArrangedSubview(nameLabel)
         centralStack.addArrangedSubview(ratingView)
         centralStack.addArrangedSubview(autorLabel)
-
+        
         contentView.addSubview(priceStack)
         priceStack.addArrangedSubview(priceTitleLabel)
         priceStack.addArrangedSubview(priceLabel)
-
+        
         NSLayoutConstraint.activate([
             iconImageView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             iconImageView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 16),
             iconImageView.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             iconImageView.widthAnchor.constraint(equalToConstant: 108),
             iconImageView.heightAnchor.constraint(equalToConstant: 108),
-
+            
             activityIndicator.centerXAnchor.constraint(equalTo: iconImageView.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: iconImageView.centerYAnchor),
             
@@ -169,14 +168,14 @@ final class MyNFTCell: UITableViewCell, MyNFTCellView {
             likeButton.topAnchor.constraint(equalTo: iconImageView.topAnchor),
             likeButton.heightAnchor.constraint(equalToConstant: 42),
             likeButton.widthAnchor.constraint(equalToConstant: 42),
-
+            
             centralStack.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 20),
             centralStack.centerYAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.centerYAnchor),
             centralStack.widthAnchor.constraint(equalToConstant: 80),
-
+            
             ratingView.widthAnchor.constraint(equalToConstant: 68),
             ratingView.heightAnchor.constraint(equalToConstant: 12),
-
+            
             priceStack.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -39),
             priceStack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])

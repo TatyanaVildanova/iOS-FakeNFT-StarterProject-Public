@@ -37,7 +37,7 @@ final class EditingProfileViewController: UIViewController {
     private lazy var labelChangePhoto: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont(name: "SFProText-Medium", size: 10)
+        label.font = UIFont.systemFont(ofSize: 10, weight: .medium)
         label.textColor = UIColor.ypwhiteUniversal
         label.text = NSLocalizedString("labelChangePhoto", comment: "")
         label.numberOfLines = 2

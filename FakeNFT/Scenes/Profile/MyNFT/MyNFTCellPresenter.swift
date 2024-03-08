@@ -40,7 +40,7 @@ final class MyNFTCellPresenter: MyNFTCellPresenterProtocol {
     }
     
     func likeButtonDidTapped() {
-        view?.unenabledLikeButton()
+        //view?.unenabledLikeButton()
         view?.showLoading()
         guard let idLikedNFt = nft?.id else { return }
         var likedNftsSet = delegate?.presenter?.likedNft
@@ -52,13 +52,13 @@ final class MyNFTCellPresenter: MyNFTCellPresenterProtocol {
         servicesAssembly?.profileService.saveProfile(
             profileEditing: ProfileModelEditing(likes: Array(likedNftsSet ?? Set()))) { [weak self, likedNftsSet] result in
                 guard let self, let likedNftsSet else { return }
-                self.view?.enabledLikeButton()
+                //self.view?.enabledLikeButton()
                 self.view?.hideLoading()
                 switch result {
                 case .success(_):
                     self.delegate?.presenter?.likedNft = likedNftsSet
                     self.delegate?.presenter?.updateData(likesNft: likedNftsSet)
-                    self.view?.updateLikeImage()
+                    //self.view?.updateLikeImage()
                 case .failure(let error):
                     self.delegate?.showAlert(title: NSLocalizedString("titleAlertError", comment: ""), message: error.localizedDescription)
                 }

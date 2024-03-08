@@ -57,7 +57,7 @@ final class ProfileViewControllerPresenter: ProfileViewControllerPresenterProtoc
                 description: profileNetworkModel.description,
                 website: profileNetworkModel.website,
                 //nfts: profileNetworkModel.nfts,
-                nfts: self?.mockMyIDNFT ?? [],           // TODO:
+                nfts: self?.mockMyIDNFT ?? [],     
                 likes: profileNetworkModel.likes
             )
             self?.profileModelUI = profileModelUI
