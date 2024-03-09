@@ -24,6 +24,8 @@ final class CatalogPresenter: CatalogPresenterProtocol {
     weak var view: CatalogViewProtocol?
     var NftCollections: [NftCollection] = []
     
+    let userInitiatedQueue = DispatchQueue.global(qos: .userInitiated)
+    
     //MARK: - Private properties
     private let service: NftCollectionService
     private let sortStorage: SortNftStorage
@@ -45,7 +47,9 @@ final class CatalogPresenter: CatalogPresenterProtocol {
         service.loadNft( completion: { [weak self] result in
             switch result {
             case .success(let collections):
-                self?.NftCollections = collections
+                self?.userInitiatedQueue.async {
+                    self?.NftCollections = collections
+                }
                 self?.checkSort()
                 self?.view?.hideLoading()
                 self?.view?.reloadData()

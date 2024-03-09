@@ -11,8 +11,8 @@ typealias ProfileCompletion = (Result<Profile, Error>) -> Void
 
 //MARK: - ProfileService
 protocol ProfileService {
-    func loadProfile(completion: @escaping ProfileCompletion)
-    func likeState(for id:String) -> Bool
+    func loadLikes(completion: @escaping ProfileCompletion)
+    func setLike(id: String, likes: [String], completion: @escaping ProfileCompletion)
 }
 
 //MARK: - ProfileServiceImpl
@@ -20,24 +20,19 @@ final class ProfileServiceImpl: ProfileService {
     
     //MARK: - Private properties
     private let networkClient: NetworkClient
-    private let storage: NftStorage
     
     // MARK: - Initializers
-    init(networkClient: NetworkClient, storage: NftStorage) {
+    init(networkClient: NetworkClient) {
         self.networkClient = networkClient
-        self.storage = storage
-        loadProfile { _ in }
+        loadLikes { _ in }
     }
     
     // MARK: - Methods
-    func loadProfile(completion: @escaping ProfileCompletion) {
+    func loadLikes(completion: @escaping ProfileCompletion) {
         let request = ProfileRequest()
-        networkClient.send(request: request, type: Profile.self) { [weak storage] result in
+        networkClient.send(request: request, type: Profile.self) { result in
             switch result {
             case .success(let profile):
-                profile.likes.forEach {
-                    storage?.saveLike($0)
-                }
                 completion(.success(profile))
             case .failure(let error):
                 completion(.failure(error))
@@ -45,7 +40,15 @@ final class ProfileServiceImpl: ProfileService {
         }
     }
     
-    func likeState(for id: String) -> Bool {
-        storage.getLike(with: id) != nil
+    func setLike(id: String, likes: [String], completion: @escaping ProfileCompletion) {
+        let request = LikeRequest(likes: likes)
+        networkClient.send(request: request, type: Profile.self) { result in
+            switch result {
+            case .success(let profile):
+                completion(.success(profile))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 }

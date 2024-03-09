@@ -44,18 +44,18 @@
 #### Экран NFT коллекции
 
 ##### Логика
-- Добавление в корзину (est: 60 min; fact: x min).
-- Добавление в избранное (est: 90 min; fact: x min).
-- Переход на экран автора (est: 10 min; fact: x min).
+- Добавление в корзину (est: 60 min; fact: 60 min).
+- Добавление в избранное (est: 90 min; fact: 60 min).
+- Переход на экран автора (est: 10 min; fact: 10 min).
 
 
 #### Экран автора
 
 ##### Верстка
-- NavBar (est: 10 min; fact: x min).
-- WebView (est: 60 min; fact: x min).
+- NavBar (est: 10 min; fact: 10 min).
+- WebView (est: 60 min; fact: 30 min).
 
 
-`Total:` est: 230 min; fact: x min.
+`Total:` est: 230 min; fact: 170 min.
 
 

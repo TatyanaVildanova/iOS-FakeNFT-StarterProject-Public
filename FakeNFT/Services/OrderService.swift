@@ -12,7 +12,7 @@ typealias OrderCompletion = (Result<Order, Error>) -> Void
 //MARK: - OrderService
 protocol OrderService {
     func loadOrders(completion: @escaping OrderCompletion)
-    func cartState(for id:String) -> Bool
+    func setOrders(id: String, orders: [String], completion: @escaping OrderCompletion)
 }
 
 //MARK: - OrderServiceImpl
@@ -20,25 +20,19 @@ final class OrderServiceImpl: OrderService {
     
     //MARK: - Private properties
     private let networkClient: NetworkClient
-    private let storage: NftStorage
     
     // MARK: - Initializers
-    init(networkClient: NetworkClient, storage: NftStorage) {
+    init(networkClient: NetworkClient) {
         self.networkClient = networkClient
-        self.storage = storage
         loadOrders { _ in }
     }
     
     // MARK: - Methods
     func loadOrders(completion: @escaping OrderCompletion) {
         let request = OrderRequest()
-        networkClient.send(request: request, type: Order.self) { [weak storage] result in
+        networkClient.send(request: request, type: Order.self) { result in
             switch result {
             case .success(let orders):
-                storage?.saveOrderId(orderId: orders.id)
-                orders.nfts.forEach {
-                    storage?.saveOrders($0)
-                }
                 completion(.success(orders))
             case .failure(let error):
                 completion(.failure(error))
@@ -46,8 +40,16 @@ final class OrderServiceImpl: OrderService {
         }
     }
     
-    func cartState(for id: String) -> Bool {
-        storage.findInOrders(id)
+    func setOrders(id: String, orders: [String], completion: @escaping OrderCompletion) {
+        let request = OrderPutRequest(id: id, orders: orders)
+        networkClient.send(request: request, type: Order.self) { result in
+            switch result {
+            case .success(let orders):
+                completion(.success(orders))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 }
 
