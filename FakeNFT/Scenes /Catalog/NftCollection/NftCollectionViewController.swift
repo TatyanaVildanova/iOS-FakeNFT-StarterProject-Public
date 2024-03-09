@@ -135,6 +135,7 @@ final class NftCollectionViewController: UIViewController {
     
     //MARK: - Private methods
     private func configure() {
+        view.backgroundColor = UIColor(named: "YP White")
         addViews()
         layoutViews()
     }
