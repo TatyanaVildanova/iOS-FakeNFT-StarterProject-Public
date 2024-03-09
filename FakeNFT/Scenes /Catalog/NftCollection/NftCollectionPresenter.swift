@@ -67,6 +67,7 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
             case .success(let profile):
                 self?.likes = profile.likes
             case .failure(let error):
+                self?.view?.showErrorAlert()
                 print(error)
             }
         })
@@ -78,6 +79,7 @@ final class NftCollectionPresenter: NftCollectionPresenterProtocol {
             case .success(let orders):
                 self?.orders = orders.nfts
             case .failure(let error):
+                self?.view?.showErrorAlert()
                 print(error)
             }
         })
