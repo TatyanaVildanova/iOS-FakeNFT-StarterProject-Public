@@ -84,7 +84,7 @@ struct DefaultNetworkClient: NetworkClient {
                 return
             }
         }
-
+        logRequest(urlRequest)
         task.resume()
 
         return DefaultNetworkTask(dataTask: task)
@@ -117,18 +117,15 @@ struct DefaultNetworkClient: NetworkClient {
 
         var urlRequest = URLRequest(url: endpoint)
         urlRequest.httpMethod = request.httpMethod.rawValue
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+        urlRequest.setValue(RequestConstants.accessToken, forHTTPHeaderField: "X-Practicum-Mobile-Token")
 
         if let dto = request.dto,
-           let dtoEncoded = try? encoder.encode(dto) {
-            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            urlRequest.httpBody = dtoEncoded
-        } else {
+           let queryString = request.dto as? String {
             urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = queryString.data(using: .utf8)
         }
-        
-        if let token = request.token {
-            urlRequest.setValue(token, forHTTPHeaderField: "X-Practicum-Mobile-Token")
-        }
+
         return urlRequest
     }
 
@@ -138,6 +135,21 @@ struct DefaultNetworkClient: NetworkClient {
             onResponse(.success(response))
         } catch {
             onResponse(.failure(NetworkClientError.parsingError))
+        }
+    }
+
+    private func logRequest(_ request: URLRequest) {
+        if let httpMethod = request.httpMethod, let url = request.url {
+            print("Request: \(httpMethod) \(url)")
+            if let headers = request.allHTTPHeaderFields {
+                print("Headers:")
+                for (key, value) in headers {
+                    print("\(key): \(value)")
+                }
+            }
+            if let bodyData = request.httpBody, let bodyString = String(data: bodyData, encoding: .utf8) {
+                print("Body: \(bodyString)")
+            }
         }
     }
 }
