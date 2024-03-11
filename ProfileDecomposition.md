@@ -31,9 +31,9 @@
     
 ## Module 3:
 ##### Избранные NFT
-    - Верстка экрана Избранное  - (est: 20 min; fact: x min) 
-    - Верстка ячеек с избранными NFT - (est: 20 min; fact: x min) 
-    - Логика перехода на предыдущий экран - (est: 20 min; fact: x min) 
-    - Верстка состояния экрана при отсутствии NFT - (est: 20 min; fact: x min)
+    - Верстка экрана Избранное  - (est: 20 min; fact: 25 min) 
+    - Верстка ячеек с избранными NFT - (est: 20 min; fact: 30 min) 
+    - Логика перехода на предыдущий экран - (est: 20 min; fact: 30 min) 
+    - Верстка состояния экрана при отсутствии NFT - (est: 20 min; fact: 30 min)
     
-`Total:` est: 80 min; fact: x min.
+`Total:` est: 80 min; fact: 115 min.
