@@ -12,14 +12,12 @@ protocol ProfilePresenterProtocol {
 final class ProfilePresenter: ProfilePresenterProtocol {
     weak var view: ProfileViewControllerProtocol?
     private let profileService: ProfileService
-    private let profileHelper: ProfileHelperProtocol
     private let input: ProfileDetailInput
     var isProfileLoaded = false
 
-    init(input: ProfileDetailInput, service: ProfileService, helper: ProfileHelperProtocol) {
+    init(input: ProfileDetailInput, service: ProfileService) {
         self.input = input
         profileService = service
-        profileHelper = helper
     }
 
     func viewDidLoad() {
@@ -35,7 +33,7 @@ final class ProfilePresenter: ProfilePresenterProtocol {
             print("Profile not loaded yet.")
             return
         }
-        guard ProfileRequest.createWithDefaultValues() != nil else {
+        guard let mockProfileRequest = ProfileRequest.createWithDefaultValues() else {
             print("Failed to create ProfileRequest with default values")
             return
         }
@@ -119,4 +117,3 @@ final class ProfilePresenter: ProfilePresenterProtocol {
         }
     }
 }
-
