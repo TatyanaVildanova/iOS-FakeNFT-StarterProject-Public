@@ -13,4 +13,3 @@ enum UserProfileConstants {
     static let defaultLikes = "db196ee3-07ef-44e7-8ff5-16548fc6f434,2c9d09f6-25ac-4d6f-8d6a-175c4de2b42f,a4edeccd-ad7c-4c7f-b09e-6edec02a812b,2c9d09f6-25ac-4d6f-8d6a-175c4de2b42f,82570704-14ac-4679-9436-050f4a32a8a0,28829968-8639-4e08-8853-2f30fcf09783,1464520d-1659-4055-8a79-4593b9569e48"
     static let defaultID = "1"
 }
-

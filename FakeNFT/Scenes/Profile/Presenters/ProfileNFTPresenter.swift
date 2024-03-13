@@ -149,7 +149,7 @@ final class ProfileNFTPresenter: ProfileNFTPresenterProtocol {
         profileService.updateLikes(id: id, likes: likes) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
-                case .success(_):
+                case .success(let updatedProfile):
                     print("Profile updated successfully.")
                 case .failure(let error):
                     print("Error updating profile: \(error)")

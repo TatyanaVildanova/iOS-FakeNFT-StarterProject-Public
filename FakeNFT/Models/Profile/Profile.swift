@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Profile: Codable {
+public struct Profile: Codable, Equatable {
     let name: String
     let avatar: URL
     let description: String

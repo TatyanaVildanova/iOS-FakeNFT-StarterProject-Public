@@ -352,7 +352,7 @@ extension ProfileNFTViewController: UICollectionViewDataSource, UICollectionView
             visibleNFTs.remove(at: index)
             collectionView.deleteItems(at: [IndexPath(item: index, section: 0)])
 
-            let updatedLikes = visibleNFTs.map {
+            var updatedLikes = visibleNFTs.map {
                 $0.id
             }
             presenter?.updateLikes(id: Constants.profileId, likes: updatedLikes)

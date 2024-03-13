@@ -184,4 +184,3 @@ final class MyNFTCell: UICollectionViewCell {
         likeButton.setImage(image, for: .normal)
     }
 }
-
