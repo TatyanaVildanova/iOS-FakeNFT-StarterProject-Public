@@ -318,8 +318,6 @@
 			isa = PBXGroup;
 			children = (
 				05EC12802BA5B6CD00F7B84D /* VCs */,
-				05EC127F2BA5B6C800F7B84D /* Cells */,
-				05EC127E2BA5B6C400F7B84D /* Models */,
 				05EC12712BA5A94900F7B84D /* Services */,
 			);
 			path = Statistics;
@@ -376,20 +374,6 @@
 				05EC12382BA59FBE00F7B84D /* UIBlockingProgressHUD.swift */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		05EC127E2BA5B6C400F7B84D /* Models */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		05EC127F2BA5B6C800F7B84D /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Cells;
 			sourceTree = "<group>";
 		};
 		05EC12802BA5B6CD00F7B84D /* VCs */ = {
