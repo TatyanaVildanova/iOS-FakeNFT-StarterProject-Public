@@ -1,54 +1,34 @@
-//
-//  OrderRequest.swift
-//  FakeNFT
-//
-//  Created by Эмилия on 28.02.2024.
-//
-
 import Foundation
 
-//MARK: - OrderRequest
 struct OrderRequest: NetworkRequest {
+    let id: String
     var endpoint: URL? {
-        URL(string: "\(RequestConstants.baseURL)/api/v1/orders/1")
+        URL(string: "\(RequestConstants.baseURL)/api/v1/orders/\(id)")
     }
 }
 
-//MARK: - OrdersPutRequest
 struct OrderPutRequest: NetworkRequest {
-    
-    //MARK: - Properties
-    let httpMethod: HttpMethod = .put
-    var id: String
-    var orders: [String]
+    let id: String
+    var nfts: [String]
+
     var endpoint: URL? {
-        URL(string: "\(RequestConstants.baseURL)/api/v1/orders/1")
+        URL(string: "\(RequestConstants.baseURL)/api/v1/orders/\(id)")
     }
-    
-    var body: Data? {
-        return ordersToString().data(using: .utf8)
-    }
-    
-    // MARK: - Initializers
-    init(id: String, orders: [String]) {
-        self.orders = orders
-        self.id = id
-    }
-    
-    // MARK: - Private methods
-    private func ordersToString() -> String {
-        var ordersString = "nfts="
-        if orders.isEmpty {
-            ordersString += ""
-        } else {
-            for (index, order) in orders.enumerated() {
-                ordersString += order
-                if index != orders.count - 1 {
-                    ordersString += "&nfts="
-                }
-            }
+
+    var httpMethod = HttpMethod.put
+    var dto: Encodable?
+    init(id: String, nfts: [String]) {
+        self.id = "1"
+        self.nfts = nfts
+
+        var components = URLComponents()
+        components.queryItems = nfts.map {
+            URLQueryItem(name: "nfts", value: $0)
         }
-        ordersString += "&id=\(id)"
-        return ordersString
+
+        if let queryString = components.percentEncodedQuery {
+            dto = queryString
+        }
     }
+
 }

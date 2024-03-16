@@ -1,16 +1,10 @@
 import Foundation
 
 struct Nft: Decodable {
-    private let createdAt: String
-    let name: String
+    let id: String
     let images: [URL]
+    let name: String
     let rating: Int
-    let description: String
     let price: Float
     let author: String
-    let id: String
-    
-    var createAtDate: Date {
-        DateFormatter.defaultDateFormatter.date(from: createdAt)!
-    }
 }
