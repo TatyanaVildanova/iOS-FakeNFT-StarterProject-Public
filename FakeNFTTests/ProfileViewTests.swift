@@ -10,9 +10,10 @@ final class ProfileViewTests: XCTestCase {
     func testViewControllerCallsViewDidLoad() {
         let mockNetworkClient = MockNetworkClient()
         let mockNftStorage = MockNftStorage()
+        let mockProfileService = MockProfileService()
 
         let servicesAssembly = ServicesAssembly(
-                networkClient: mockNetworkClient,
+            networkClient: mockNetworkClient, nftStorageCatalog: mockProfileService as! NftStorageCatalog,
                 nftStorage: mockNftStorage
         )
 
