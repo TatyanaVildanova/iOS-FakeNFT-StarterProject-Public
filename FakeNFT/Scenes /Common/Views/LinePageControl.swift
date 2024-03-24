@@ -69,3 +69,4 @@ final class LinePageControl: UIView {
 // MARK: - Constants
 
 private let height: CGFloat = 4
+

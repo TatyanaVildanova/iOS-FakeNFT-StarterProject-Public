@@ -131,3 +131,4 @@ extension NftDetailViewController: UICollectionViewDelegateFlowLayout {
         pageControl.selectedItem = selectedItem
     }
 }
+

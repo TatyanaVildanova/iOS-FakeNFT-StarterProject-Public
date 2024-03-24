@@ -2,6 +2,9 @@
 
 # Ссылки
 
+[Скринкаст](https://disk.yandex.ru/i/Cjtrco_vB9yTuQ) 
+[Скринкаст](https://disk.yandex.ru/client/disk/ios-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0?idApp=client&dialog=slider&idDialog=%2Fdisk%2Fios-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0%2FProfile.mov)
+
 [Дизайн Figma](https://www.figma.com/file/k1LcgXHGTHIeiCv4XuPbND/FakeNFT-(YP)?node-id=96-5542&t=YdNbOI8EcqdYmDeg-0)
 
 # Назначение и цели приложения

@@ -39,3 +39,4 @@ private enum Constants {
     static let openNftTitle = NSLocalizedString("Catalog.openNft", comment: "")
     static let testNftId = "22"
 }
+
